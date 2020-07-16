@@ -1,0 +1,45 @@
+#providerDtlContainer{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: blue;
+}
+
+
+
+#cardContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+
+h4{
+    text-align: start;
+    color: gray;
+}
+
+h5{
+    text-align: start;
+}
+
+
+@media only screen and (max-width: 600px) {
+    #cardContainer{
+        /*background-color: blue;*/
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #providerDtlContainer{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: blue;
+    }
+}

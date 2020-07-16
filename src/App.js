@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
+import CareAppBar from "./components/CareAppBar/CareAppBar";
+import CareRouter from "./components/Router/CareRouter";
+import CareBottomNav from "./components/CareBottomNav/CareBottomNav";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+
+class App extends Component {
+    constructor(props){
+        super(props);
+
+    }
+
+
+
+    render() {
+        return (
+            <div className="App">
+                {/*<CareAppBar></CareAppBar>*/}
+                {/*<header className="App-header">*/}
+                {/*</header>*/}
+                <CareRouter></CareRouter>
+                {/*<CareBottomNav></CareBottomNav>*/}
+
+            </div>
+        );
+    }
 }
 
 export default App;
