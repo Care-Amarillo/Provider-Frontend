@@ -117,6 +117,19 @@ const EditProviderListItem = () => {
     </ListItem>;
 }
 
+
+
+const UserListItem = () => {
+    return <ListItem key="Profile" component={Link} to={"/editUser"}>
+        <ListItemIcon>
+            <AccountCircleIcon/>
+
+        </ListItemIcon>
+        <ListItemText primary="Profile"/>
+    </ListItem>;
+}
+
+
 const LogOutListItem = (props) => {
     const handleClick = () =>{
         props.drawerProps.unsetToken(props.drawerProps.token);
@@ -130,6 +143,8 @@ const LogOutListItem = (props) => {
         <ListItemText primary="Log Out"/>
     </ListItem>;
 }
+
+
 
 
 const CareAppDrawer = (props) => {
@@ -158,6 +173,7 @@ const CareAppDrawer = (props) => {
     if (props.token) {
         listOfListItems.push(<AuditListItem/>);
         listOfListItems.push(<ProviderEntryListItem/>);
+        listOfListItems.push(<UserListItem/>);
         listOfListItems.push(<LogOutListItem drawerProps={props}/>);
     } else {
         listOfListItems.push(<LoginListItem/>);

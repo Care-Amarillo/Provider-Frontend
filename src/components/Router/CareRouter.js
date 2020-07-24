@@ -1,24 +1,13 @@
 import React from 'react'
-import { Switch, Route, Link, BrowserRouter } from "react-router-dom";
+import { Switch, Route, BrowserRouter } from "react-router-dom";
 import ProviderDetail from "../ProviderDetail/ProviderDetail";
 import Login from "../../containers/Login";
 import ProtectedRoute from "../../containers/ProtectedRoute";
 import Register from "../../containers/Register";
-import CareBottomNav from "../CareBottomNav/CareBottomNav";
 import ProviderPanel from "../../containers/ProviderPanel";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Divider from "@material-ui/core/Divider";
-import Drawer from "@material-ui/core/Drawer";
-import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import MailIcon from "@material-ui/icons/Mail";
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -29,6 +18,8 @@ import ProviderEntries from "../ProviderEntries/ProviderEntries";
 import AuditEntries from "../AuditEntries/AuditEntries";
 import ProviderRegister from "../../containers/ProviderRegister";
 import CareAppNav from "../CareAppBar/CareAppNav";
+import EditProvider from "../../containers/EditProvider";
+import EditUser from "../../containers/EditUser";
 
 //todo: figure out a way to separate responsive drawer
 
@@ -75,65 +66,7 @@ function ResponsiveDrawer(props) {
         setMobileOpen(!mobileOpen);
     };
 
-    const drawer = (
 
-        <div>
-            <div className={classes.toolbar} />
-            <Divider />
-            <List>
-                <ListItem key="login" component={Link} to={"/login"  }>
-                    <ListItemIcon>
-                        <AccountCircleIcon/>
-
-                    </ListItemIcon>
-                    <ListItemText primary="Login" />
-                </ListItem>
-
-                <ListItem key="register" component={Link} to={"/register"  }>
-                    <ListItemIcon>
-                        <AccountCircleIcon/>
-
-                    </ListItemIcon>
-                    <ListItemText primary="Register" />
-                </ListItem>
-
-                <ListItem key="audit" component={Link} to={"/audit"  }>
-                    <ListItemIcon>
-                        <AccountCircleIcon/>
-
-                    </ListItemIcon>
-                    <ListItemText primary="Audit" />
-                </ListItem>
-
-
-                <ListItem key="provider" component={Link} to={"/provider"  }>
-                    <ListItemIcon>
-                        <AccountCircleIcon/>
-
-                    </ListItemIcon>
-                    <ListItemText primary="Provider" />
-                </ListItem>
-
-                <ListItem key="providerEntries" component={Link} to={"/providerEntry"  }>
-                    <ListItemIcon>
-                        <AccountCircleIcon/>
-
-                    </ListItemIcon>
-                    <ListItemText primary="Provider Entries" />
-                </ListItem>
-
-
-                <ListItem key="providerSignUp" component={Link} to={"/providerSignUp"  }>
-                    <ListItemIcon>
-                        <AccountCircleIcon/>
-
-                    </ListItemIcon>
-                    <ListItemText primary="Create Provider" />
-                </ListItem>
-
-            </List>
-        </div>
-    );
 
     // todo: maybe change to functional component
     const appBar = (
@@ -156,40 +89,6 @@ function ResponsiveDrawer(props) {
     );
 
 
-    // todo: maybe change to functional component
-    const nav = (
-        <nav className={classes.drawer} aria-label="mailbox folders">
-            {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-            <Hidden smUp implementation="css">
-                <Drawer
-                    container={container}
-                    variant="temporary"
-                    anchor={theme.direction === "rtl" ? "right" : "left"}
-                    open={mobileOpen}
-                    onClose={handleDrawerToggle}
-                    classes={{
-                        paper: classes.drawerPaper
-                    }}
-                    ModalProps={{
-                        keepMounted: true // Better open performance on mobile.
-                    }}
-                >
-                    {drawer}
-                </Drawer>
-            </Hidden>
-            <Hidden xsDown implementation="css">
-                <Drawer
-                    classes={{
-                        paper: classes.drawerPaper
-                    }}
-                    variant="permanent"
-                    open
-                >
-                    {drawer}
-                </Drawer>
-            </Hidden>
-        </nav>
-    );
 
     return (
         <div className={classes.root}>
@@ -198,7 +97,6 @@ function ResponsiveDrawer(props) {
             {appBar}
             <Provider store={store}>
                 <BrowserRouter>
-                    {/*{nav}*/}
                     <CareAppNav/>
                     <main className={classes.content}>
                         <div className={classes.toolbar} />
@@ -208,6 +106,7 @@ function ResponsiveDrawer(props) {
                             <ProtectedRoute exact path="/audit" component={AuditEntries} />
                             <ProtectedRoute exact path="/providerEntry" component={ProviderEntries} />
                             <ProtectedRoute exact path="/editProvider" component={EditProvider} />
+                            <ProtectedRoute exact path="/editUser" component={EditUser} />
                             <Route exact path="/provider" component={ProviderPanel} />
                             <Route exact path="/login" component={Login} />
                             <Route exact path="/register" component={Register} />
