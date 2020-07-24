@@ -11,6 +11,8 @@ import AutoCompleteInput from "../GooglePlacesApi/AutoCompleteInput";
 import {Redirect} from "react-router-dom";
 import axios from "axios";
 import AlertDialogSlide from "../AlertDialogSlide";
+import {ToastContainer} from "react-toastr";
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -68,7 +70,7 @@ const FormOne = (props) => {
     return <form className={classes.form} noValidate autoComplete="off">
         <TextField id="name" label="Name" onChange={onChangeName} value={registerComponent.state.name}
                    variant="outlined"/>
-        <TextField id="title" label="Title" onChange={onChangeTitle} variant="outlined"/>
+        <TextField id="title" label="Title" value={registerComponent.state.title} onChange={onChangeTitle} variant="outlined"/>
         <TextField id="phone" label="Phone Number" onChange={onChangePhone} value={registerComponent.state.phone}
                    type="number" variant="outlined"/>
         <TextField id="email" label="Email" onChange={onChangeEmail} value={registerComponent.state.email}
@@ -205,7 +207,7 @@ const HorizontalLinearStepper = (props) => {
     const slideAlertCallback = (isTrue) => {
         if (isTrue) {
             console.log("is true");
-            registerComponent.register();
+            registerComponent.updateProvider();
         } else {
             console.log("is false");
         }
@@ -287,7 +289,7 @@ const HorizontalLinearStepper = (props) => {
 }
 
 
-class ProviderRegister extends Component {
+class EditProvider extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -385,8 +387,8 @@ class ProviderRegister extends Component {
         });
     }
 
-    register = async () => {
-        let URL = "https://careamabrain.cmcoffee91.dev/providers";
+    updateProvider = async () => {
+        let URL = "https://careamabrain.cmcoffee91.dev/providers/" + this.state.providerId;
         // let URL = "http://localhost:3000/users/authenticate";
 
 
@@ -398,7 +400,7 @@ class ProviderRegister extends Component {
         };
 
         const response = await axios({
-            method: 'post',
+            method: 'put',
             url: URL,
             data: {
                 name: this.state.name,
@@ -422,16 +424,15 @@ class ProviderRegister extends Component {
         const data = await response.data;
         console.log("data " + JSON.stringify(data));
         const msg = data.Message;
-        const user = data.updatedUser;
+        const provider = data.provider;
         console.log("msg " + msg);
 
-        if (msg === "Provider created successfully") {
+        if (msg === "Updated Provider successfully") {
             console.log("successfully created provider");
-            // await this.login();
-            this.props.setUser(user);
-            this.setState({
-                isCreated: true
+            this.container.success(`Provider Updated`, `Success`, {
+                closeButton: true,
             });
+            this.props.setProvider(provider);
         } else {
             console.log("unsuccessfully created provider");
         }
@@ -442,16 +443,62 @@ class ProviderRegister extends Component {
 
 
     componentDidMount() {
+        this.loadData();
+    }
+
+    loadData = async () => {
+
+        let URL = "https://careamabrain.cmcoffee91.dev/managingUsers/user/" + this.props.user._id ;
+
+        const config = {
+            "Authorization": `Bearer ${this.props.token}`
+        };
+
+        const response = await axios({
+            method: 'get',
+            url: URL,
+            headers:config
+        });
+
+        const data = await response.data;
+        console.log("data " + JSON.stringify(data));
+        console.log("data length:" + data.length);
+        if(data.length > 0){
+            let provider = data[0].provider;
+            console.log("provider title is " + provider.title);
+            this.setState({
+                name: provider.name,
+                title: provider.title,
+                phone: provider.phone,
+                email: provider.email,
+                address: provider.address,
+                place_id: provider.place_id,
+                zip: provider.zip,
+                totalBeds: provider.totalBeds,
+                lat: provider.lat,
+                long: provider.long,
+                bedsUsed: provider.bedsUsed,
+                providerId: provider._id,
+            });
+        }
+
+
+
+
+
+
     }
 
     render() {
-        return !this.state.isCreated ? (
-            <div id="registerContainer">
-                <HorizontalLinearStepper registerComponent={this}/>
-                <AutoCompleteInput onChange={this.gotPlace}/>
-            </div>
-        ) : <Redirect to="/provider"/>;
+        return <div id="registerContainer">
+            <ToastContainer
+                ref={ref => this.container = ref}
+                className="toast-bottom-right"
+            />
+            <HorizontalLinearStepper registerComponent={this}/>
+            <AutoCompleteInput onChange={this.gotPlace}/>
+        </div>;
     }
 }
 
-export default ProviderRegister;
+export default EditProvider;

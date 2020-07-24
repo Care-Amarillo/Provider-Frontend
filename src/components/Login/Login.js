@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import './Login.css';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import {Link, Redirect} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -39,6 +40,9 @@ const LoginForm = (props) => {
         <Button onClick={props.loginClicked} variant="contained" color="primary">
             Login
         </Button>
+        <Button to="/register" component={Link} variant="contained" color="primary">
+            Register
+        </Button>
     </form>;
 }
 
@@ -59,35 +63,7 @@ class Login extends Component {
     // todo: put in its own class so not duplicated across register
     login = async () => {
 
-        let URL = "https://careamabrain.cmcoffee91.dev/users/authenticate";
-        // let URL = "http://localhost:3000/users/authenticate";
-
-        this.setState({
-            jwt: ""
-        });
-
-        console.log("state " + JSON.stringify(this.state));
-
-        const response = await axios({
-            method: 'post',
-            url: URL,
-            data: {
-                email: this.state.email,
-                password: this.state.password
-            }
-        });
-
-
-        const data = await response.data;
-        console.log("data " + JSON.stringify(data));
-        const user = data.user;
-        const token = data.token;
-        console.log("user " + JSON.stringify(data.user));
-        console.log("token " + JSON.stringify(data.token));
-
-        this.setState({
-            jwt: token
-        });
+        this.props.setToken(this.state);
 
     }
 
@@ -108,12 +84,15 @@ class Login extends Component {
     }
 
     render() {
-        return (
+        console.log("props.token login:" + this.props.token);
+        return !this.props.token ?  (
             <div id="loginContainer">
+
                 <LoginForm onChangeEmail={this.onChangeEmail} onChangePass={this.onChangePass}
                            loginClicked={this.loginClicked}/>
             </div>
-        );
+        ):  <Redirect to="/provider"/>;
+
     }
 }
 

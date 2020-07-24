@@ -1,0 +1,24 @@
+#providerContainer{
+    display: flex;
+    flex-direction: column;
+}
+
+#actionContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 8px;
+    width: 100%;
+}
+
+#actionContainer > Link{
+    color: white;
+}
+#actionContainer > Button{
+    margin-right: 2px;
+    color:white;
+}
+
+#noneElement{
+    display: none;
+}

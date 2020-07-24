@@ -7,8 +7,6 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import './Register.css';
-import CareBottomNav from "../CareBottomNav/CareBottomNav";
-import AutoCompleteInput from "../GooglePlacesApi/AutoCompleteInput";
 import {Redirect} from "react-router-dom";
 import axios from "axios";
 
@@ -229,10 +227,7 @@ const HorizontalLinearStepper = (props) => {
     );
 }
 
-const gotPlace = (place) =>{
-    console.log("gotPlace")
-    console.log("got place: " + JSON.stringify(place));
-}
+
 
 class Register extends Component {
     constructor(props) {
@@ -286,7 +281,7 @@ class Register extends Component {
 
         if(msg === "Person created successfully"){
             console.log("successfully created user");
-            await this.login();
+            this.props.setToken(this.state);
         }
         else{
             console.log("unsuccessfully created user");
@@ -294,42 +289,7 @@ class Register extends Component {
 
     }
 
-    // todo: put in its own class so not duplicated across login
-    login = async () => {
 
-        let URL = "https://careamabrain.cmcoffee91.dev/users/authenticate";
-        // let URL = "http://localhost:3000/users/authenticate";
-
-        this.setState({
-            jwt: ""
-        });
-
-        console.log("state " + JSON.stringify(this.state));
-
-        const response = await axios({
-            method: 'post',
-            url: URL,
-            data: {
-                email: this.state.email,
-                password: this.state.password
-            }
-        });
-
-
-        const data = await response.data;
-        console.log("data " + JSON.stringify(data));
-        const user = data.user;
-        const token = data.token;
-        console.log("user " + JSON.stringify(data.user));
-        console.log("token " + JSON.stringify(data.token));
-
-        this.setState({
-            jwt: token,
-            isLoggedIn: true
-        });
-
-
-    }
 
 
 
@@ -337,10 +297,9 @@ class Register extends Component {
     }
 
     render() {
-        return !this.state.isLoggedIn ?  (
+        return !this.props.token ?  (
             <div id="registerContainer">
                 <HorizontalLinearStepper registerComponent={this}/>
-                <AutoCompleteInput onChange={gotPlace}/>
             </div>
         ):  <Redirect to="/provider"/>;
     }

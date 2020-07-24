@@ -1,10 +1,11 @@
 import React from 'react'
 import { Switch, Route, Link, BrowserRouter } from "react-router-dom";
 import ProviderDetail from "../ProviderDetail/ProviderDetail";
-import Login from "../Login/Login";
-import Register from "../Register/Register";
+import Login from "../../containers/Login";
+import ProtectedRoute from "../../containers/ProtectedRoute";
+import Register from "../../containers/Register";
 import CareBottomNav from "../CareBottomNav/CareBottomNav";
-import ProviderPanel from "../Provider/ProviderPanel";
+import ProviderPanel from "../../containers/ProviderPanel";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
@@ -26,6 +27,8 @@ import { Provider } from 'react-redux';
 import store from '../../redux/store';
 import ProviderEntries from "../ProviderEntries/ProviderEntries";
 import AuditEntries from "../AuditEntries/AuditEntries";
+import ProviderRegister from "../../containers/ProviderRegister";
+import CareAppNav from "../CareAppBar/CareAppNav";
 
 //todo: figure out a way to separate responsive drawer
 
@@ -119,6 +122,15 @@ function ResponsiveDrawer(props) {
                     <ListItemText primary="Provider Entries" />
                 </ListItem>
 
+
+                <ListItem key="providerSignUp" component={Link} to={"/providerSignUp"  }>
+                    <ListItemIcon>
+                        <AccountCircleIcon/>
+
+                    </ListItemIcon>
+                    <ListItemText primary="Create Provider" />
+                </ListItem>
+
             </List>
         </div>
     );
@@ -181,24 +193,25 @@ function ResponsiveDrawer(props) {
 
     return (
         <div className={classes.root}>
+
             <CssBaseline />
             {appBar}
             <Provider store={store}>
                 <BrowserRouter>
-                    {nav}
+                    {/*{nav}*/}
+                    <CareAppNav/>
                     <main className={classes.content}>
                         <div className={classes.toolbar} />
                         <Switch>
-                            <Route exact path="/" component={Register} />
-                            {/*<Route exact path="/" component={ProviderPanel} />*/}
-                            {/*<Route exact path="/" component={ProviderEntries} />*/}
-                            {/*<Route exact path="/" component={AuditEntries} />*/}
-                            <Route exact path="/audit" component={AuditEntries} />
-                            <Route exact path="/providerEntry" component={ProviderEntries} />
+                            <Route exact path="/" component={ProviderPanel} />
+                            <ProtectedRoute exact path="/providerSignUp" component={ProviderRegister} />
+                            <ProtectedRoute exact path="/audit" component={AuditEntries} />
+                            <ProtectedRoute exact path="/providerEntry" component={ProviderEntries} />
+                            <ProtectedRoute exact path="/editProvider" component={EditProvider} />
                             <Route exact path="/provider" component={ProviderPanel} />
                             <Route exact path="/login" component={Login} />
                             <Route exact path="/register" component={Register} />
-                            <Route exact path="/providerDtl" component={ProviderDetail} />
+                            <Route exact path="/providerDtl/:id" component={ProviderDetail} />
                         </Switch>
                     </main>
                 </BrowserRouter>

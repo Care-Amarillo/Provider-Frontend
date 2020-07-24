@@ -28,7 +28,7 @@ function handleScriptLoad(updateQuery, autoCompleteRef, onChange) {
         autoCompleteRef.current,
         { types: [], componentRestrictions: { country: "us" } }
     );
-    autoComplete.setFields(["address_components", "photos", "formatted_address","geometry", "name", "opening_hours", "formatted_phone_number"]);
+    autoComplete.setFields(["address_components", "photos", "formatted_address","geometry", "name", "opening_hours", "formatted_phone_number","place_id"]);
     autoComplete.addListener("place_changed", () =>
         handlePlaceSelect(updateQuery, onChange)
     );
@@ -37,6 +37,7 @@ function handleScriptLoad(updateQuery, autoCompleteRef, onChange) {
 async function handlePlaceSelect(updateQuery, onChange) {
     const placeObject = autoComplete.getPlace();
     const name = placeObject.name;
+    console.log(autoComplete);
     // updateQuery(query);
     updateQuery(name);
     console.log(placeObject);
@@ -46,6 +47,7 @@ async function handlePlaceSelect(updateQuery, onChange) {
 const AutoCompleteInput = (props) => {
     const [query, setQuery] = useState("");
     const autoCompleteRef = useRef(null);
+    //todo: move key to env
     const GOOGLE_API_KEY = "AIzaSyCOvmLGpbzVEgMywSh3g4g6mbaynTbdIiU";
 
     useEffect(() => {

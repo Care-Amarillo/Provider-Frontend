@@ -63,7 +63,7 @@ const ProviderCard = (props) => {
             <CardActions>
                 <Button size="small" color="primary">
                     <Link className="barLink"   to={{
-                        pathname:"/providerDtl",
+                        pathname:`/providerDtl/${data._id}`,
                         state: {
                             data:data
                         }
@@ -78,7 +78,7 @@ class Providers extends Component {
     render() {
         return (
             <div id="providerContainer">
-                <ProviderCard data={this.props.data}></ProviderCard>
+                <ProviderCard data={this.props.data}/>
             </div>
         );
     }

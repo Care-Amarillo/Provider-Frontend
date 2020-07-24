@@ -17,6 +17,51 @@ import {
 import Button from '@material-ui/core/Button';
 import 'date-fns';
 import axios from "axios";
+import MaterialTable from "material-table";
+import { forwardRef } from 'react';
+
+
+import AddBox from '@material-ui/icons/AddBox';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
+import Check from '@material-ui/icons/Check';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import Clear from '@material-ui/icons/Clear';
+import DeleteOutline from '@material-ui/icons/DeleteOutline';
+import Edit from '@material-ui/icons/Edit';
+import FilterList from '@material-ui/icons/FilterList';
+import FirstPage from '@material-ui/icons/FirstPage';
+import LastPage from '@material-ui/icons/LastPage';
+import Remove from '@material-ui/icons/Remove';
+import SaveAlt from '@material-ui/icons/SaveAlt';
+import Search from '@material-ui/icons/Search';
+import ViewColumn from '@material-ui/icons/ViewColumn';
+import AlertDialogSlide from "../AlertDialogSlide";
+import { ToastContainer, ToastMessage, ToastMessageAnimated } from "react-toastr";
+
+const tableIcons = {
+    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+    DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+    SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
+    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+};
+
+
+
+
 
 const CLIENT_ID = '461686716459-krre353uecr54mdkbbj094vf9mevti55.apps.googleusercontent.com';
 const API_KEY = 'AIzaSyCOvmLGpbzVEgMywSh3g4g6mbaynTbdIiU';
@@ -28,21 +73,65 @@ const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v
 // included, separated by spaces.
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 
+
+const ProviderTable = (props) => {
+    return  <div style={{ maxWidth: "100%" }}>
+        <MaterialTable
+            icons={tableIcons}
+            columns={[
+                { title: "Amount Changed", field: "amountChanged" },
+                { title: "Date", field: "createdAt", type: "datetime", searchable:false },
+            ]}
+            data={props.data}
+            title="Provider Entry"
+            options={{
+                sorting: true,
+                search: true,
+                exportButton: true,
+                exportCsv: (columns, data) => {
+
+                    props.setOpen();
+                }
+            }}
+        />
+    </div>;
+}
+
 class ProviderEntries extends Component {
     constructor(props){
         super(props);
+        let midNight = new Date();
+        midNight.setHours(24,0,0,0);
+
+        let todayMidNight = new Date();
+        todayMidNight.setHours(0,0,0,0);
+
         this.state = {
             entries: [],
-            selectedStartDate: Date(),
-            selectedEndDate: Date(),
+            selectedStartDate: todayMidNight,
+            selectedEndDate: midNight,
+            open: false,
+            sheetsDialogOpen: false,
+            alertTitle : "CSV Export Options",
+            alertDescription : "How would you like your CSV to be exported?",
+            alertYesOptionTitle : "CSV",
+            alertNoOptionTitle : "Google Sheets",
+            alertSheetsTitle : "Google Sheets Export Options",
+            alertSheetsDescription : "Copy the new link to your clipboard or open the Google Sheet in a new tab?",
+            alertSheetsYesOptionTitle : "Copy",
+            alertSheetsNoOptionTitle : "Open In New Tab",
+            sheetUrl : ""
         }
     }
+
 
 
 
     componentDidMount() {
         this.loadData();
     }
+
+
 
     loadData = async () => {
 
@@ -57,9 +146,10 @@ class ProviderEntries extends Component {
         // const data = await response.json();
         // console.log("data " + JSON.stringify(data));
         let providerId = "5ef9bfe4cd24582b13b7055d";
+        console.log("sstart date:" + this.state.selectedStartDate.toISOString());
+        console.log("end date:" + this.state.selectedEndDate.toISOString());
 
-        let URL = "https://careamabrain.cmcoffee91.dev/providerEntries/" + providerId;
-        // let URL = "http://localhost:3000/providers";
+        let URL = "https://careamabrain.cmcoffee91.dev/providerEntriesByDate/" + providerId + "?startDate=" +  this.state.selectedStartDate.toISOString()   + "&endDate=" + this.state.selectedEndDate.toISOString();
 
         this.setState({
             entries: []
@@ -92,7 +182,11 @@ class ProviderEntries extends Component {
     handleStartDateChange = (e) => {
         // setSelectedStartDate(e);
         this.setState({
-            selectedStartDate: e
+            selectedStartDate: e,
+
+        },
+        () => {
+            this.loadData();
         });
     };
 
@@ -100,7 +194,11 @@ class ProviderEntries extends Component {
         // setSelectedEndDate(e);
         this.setState({
             selectedEndDate: e
+        },
+            () => {
+                this.loadData();
         });
+        this.loadData();
     };
 
 
@@ -147,7 +245,6 @@ class ProviderEntries extends Component {
 
     makeGoogleSheetsApiCall = async() => {
 
-
         let response = await window.gapi.client.sheets.spreadsheets.create({
             properties: {
                 title: "Provider Entries"
@@ -164,56 +261,18 @@ class ProviderEntries extends Component {
         console.log("sheetOne id " + sheetId);
         console.log("sheetOne url " + sheetUrl);
 
-        this.saveDataToGoogleSheet(sheetId);
+        this.setState({
+            sheetUrl: sheetUrl
+        },()=>{
+            this.setSheetsDialogOpen();
+        });
 
-        // window.gapi.client.sheets.spreadsheets.create({
-        //     properties: {
-        //         title: "Provider Entries"
-        //     }
-        // }).then((response) => {
-        //
-        //     console.log(response.result);
-        //
-        //     var result = response.result;
-        //     var sheets = response.result.sheets;
-        //     var sheetOne = sheets[0];
-        //     var sheetId = result.spreadsheetId;
-        //     var sheetUrl = result.spreadsheetUrl;
-        //     console.log("sheets " + sheets);
-        //     console.log("sheetOne " + sheetOne);
-        //     console.log("sheetOne id " + sheetId);
-        //     console.log("sheetOne url " + sheetUrl);
-        //
-        //     // crtc.url = sheetUrl.toString();
-        //     // $scope.urlShow = true;
-        //     // $scope.$digest();
-        //     // console.log("url is " + crtc.url);
-        //     // saveDataToSheet(sheetId);
-        //
-        //
-        //
-        // });
+        this.saveDataToGoogleSheet(sheetId);
 
 
     }
 
     saveDataToGoogleSheet = (sheetId) => {
-
-
-        /*
-
-        "Question Number": crtc.members[i].num ,
-                    "Amount": crtc.members[i].amount ,
-                    "Average Grade": crtc.members[i].avgGrade ,
-                    "Question Type": crtc.members[i].type,
-                    "Answer Choice A": crtc.members[i].a,
-                    "Answer Choice B": crtc.members[i].b,
-                    "Answer Choice C": crtc.members[i].c,
-                    "Answer Choice D": crtc.members[i].d,
-                    "True": crtc.members[i].t,
-                    "False": crtc.members[i].f
-
-        */
 
         var len = this.state.entries.length;
         var arr = new Array(len);
@@ -334,25 +393,83 @@ class ProviderEntries extends Component {
         return result;
     }
 
+    setOpen = () =>{
+        let openStatus = this.state.open;
+        if(openStatus){
+            openStatus = false;
+        }
+        else{
+            openStatus = true;
+        }
+
+        this.setState({
+            open: openStatus
+        });
+    }
+
+    setSheetsDialogOpen = () =>{
+        let openStatus = this.state.sheetsDialogOpen;
+        if(openStatus){
+            openStatus = false;
+        }
+        else{
+            openStatus = true;
+        }
+
+        this.setState({
+            sheetsDialogOpen: openStatus
+        });
+    }
+
+    slideAlertCallback = (isCSV) => {
+        if (isCSV) {
+            console.log("is csv" );
+            this.exportReport();
+        } else {
+            console.log("is sheets");
+            this.exportReportToGoogleSheets();
+        }
+    }
+
+
+    sheetsSlideAlertCallback = (isCopy) => {
+        if (isCopy) {
+            console.log("is copy" );
+            navigator.clipboard.writeText(this.state.sheetUrl);
+
+            this.container.success(`Link Copied To Clipboard`, `Success`, {
+                closeButton: true,
+            });
+        } else {
+            console.log("is open in new tab");
+            window.open(this.state.sheetUrl, '_blank');
+        }
+    }
+
+
+
+
     render() {
         return (
             <Container maxWidth="lg" className="car-container">
-                {/*<h4>Welcome, {props.user.username}</h4>*/}
+                <ToastContainer
+                    ref={ref => this.container = ref}
+                    className="toast-top-right"
+                />
                 <div className="flex-container">
-                    {/*<Chart />*/}
-                    {/*<Total />*/}
-                    {/*<AddCar carTotal={props.cars.length} />*/}
-                    <Button variant="contained" color="primary" onClick={this.exportReport}>
-                        Export
-                    </Button>
-                    <Button variant="contained" color="primary" onClick={this.exportReportToGoogleSheets}>
-                        Export To Google Sheets
-                    </Button>
+                    {/*dialog used to open csv option*/}
+                    <AlertDialogSlide open={this.state.open} setOpen={this.setOpen} alertSlideCallback={this.slideAlertCallback} title={this.state.alertTitle}
+                                      description={this.state.alertDescription} yesOptionTitle={this.state.alertYesOptionTitle} noOptionTitle={this.state.alertNoOptionTitle} />
+
+
+                    {/*dialog for copy or open in new tab of google sheets link */}
+                    <AlertDialogSlide open={this.state.sheetsDialogOpen} setOpen={this.setSheetsDialogOpen} alertSlideCallback={this.sheetsSlideAlertCallback} title={this.state.alertSheetsTitle}
+                                      description={this.state.alertSheetsDescriptionDescription} yesOptionTitle={this.state.alertSheetsYesOptionTitle} noOptionTitle={this.state.alertSheetsNoOptionTitle} />
+
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <div id="dateContainer">
                             <KeyboardDatePicker
                                 disableToolbar
-                                variant="inline"
                                 format="MM/dd/yyyy"
                                 margin="normal"
                                 id="date-picker-start"
@@ -365,7 +482,6 @@ class ProviderEntries extends Component {
                             />
                             <KeyboardDatePicker
                                 disableToolbar
-                                variant="inline"
                                 format="MM/dd/yyyy"
                                 margin="normal"
                                 id="date-picker-end"
@@ -379,22 +495,7 @@ class ProviderEntries extends Component {
                         </div>
                     </MuiPickersUtilsProvider>
                 </div>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Amount Changed</TableCell>
-                            <TableCell>Date</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {this.state.entries.map((entry, idx) => (
-                            <TableRow key={entry["_id"]}>
-                                <TableCell>{entry["amountChanged"]}</TableCell>
-                                <TableCell>{format(new Date(entry["createdAt"]), "MMMM d, yyyy H:mma")}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                <ProviderTable data={this.state.entries} setOpen={this.setOpen}/>
             </Container>
         );
     }

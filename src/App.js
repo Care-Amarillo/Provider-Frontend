@@ -6,6 +6,9 @@ import CareBottomNav from "./components/CareBottomNav/CareBottomNav";
 
 
 
+
+
+
 class App extends Component {
     constructor(props){
         super(props);
@@ -17,12 +20,7 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                {/*<CareAppBar></CareAppBar>*/}
-                {/*<header className="App-header">*/}
-                {/*</header>*/}
                 <CareRouter></CareRouter>
-                {/*<CareBottomNav></CareBottomNav>*/}
-
             </div>
         );
     }

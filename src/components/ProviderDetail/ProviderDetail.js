@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import {
     Link
 } from "react-router-dom";
+import axios from "axios";
 
 
 const mapApiKey = "AIzaSyCOvmLGpbzVEgMywSh3g4g6mbaynTbdIiU";
@@ -45,15 +46,36 @@ const useStyles = makeStyles({
 const ProviderMap = (props) => {
     const data = props.data;
 
-    // const lat = data.lat;
-    // const long = data.long;
 
-    const lat = "35.1957878";
-    const long = "-101.8515413";
-    const mapSrc = `https://www.google.com/maps/embed/v1/place?q=${lat},${long}&key=${mapApiKey}`;
+    if(!data){
+        console.log('data null providermap');
+        return <div></div>;
+    }
+
+    let lat = "0.0";
+    let long = "0.0";
+    let place_id = data.place_id;
+    if(data.long && data.lat){
+        lat = data.lat;
+        long = data.long;
+    }
+
+    if(lat === "0.0" && long === "0.0"){
+        return <div></div>;
+    }
+
+    let mapSrc = `https://www.google.com/maps/embed/v1/place?q=${lat},${long}&key=${mapApiKey}`;
+    if(place_id !== ""){
+        mapSrc = `https://www.google.com/maps/embed/v1/place?q=place_id:${place_id}&key=${mapApiKey}`;
+    }
+
+
 
        let mapIframe = <iframe width="100%" height="450" frameborder="0"
                 src={mapSrc} allowfullscreen></iframe>;
+
+    console.log(mapSrc);
+
     return mapIframe;
 }
 
@@ -153,11 +175,11 @@ const ProviderDtlAddressCard = (props) => {
 
     const data = props.data;
     const address = data.address;
-    // const lat = data.lat;
-    // const long = data.long;
+    const lat = data.lat;
+    const long = data.long;
 
-    const lat = "35.1957878";
-    const long = "-101.8515413";
+    console.log("long: " + long);
+    console.log("lat: " + lat);
 
     const appleDrivingDirections = `https://maps.apple.com/?q=${lat},${long}`;
     const androidDrivingDirections = `google.navigation:q=${lat},${long}`;
@@ -196,15 +218,39 @@ class ProviderDetail extends Component {
     constructor(props){
         super(props);
         this.state = {
-            data: {}
+            data: {},
+            id:null
         }
     }
 
     componentDidMount() {
-        console.log("this provider dtl data: " + JSON.stringify(this.props.location.state.data));
+        const id = this.props.match.params.id;
+        console.log("dtl id : " + id);
         this.setState({
-            data: this.props.location.state.data
+            // data: this.props.location.state.data,
+            id: id
+        },()=>{
+            this.loadData();
         });
+    }
+
+
+    loadData = async () => {
+
+        let URL = "https://careamabrain.cmcoffee91.dev/providers/" + this.state.id ;
+
+        const response = await axios({
+            method: 'get',
+            url: URL,
+        });
+
+        const data = await response.data;
+        console.log("data " + JSON.stringify(data));
+
+        this.setState({
+            data: data
+        });
+
     }
 
     render() {
@@ -224,7 +270,7 @@ class ProviderDetail extends Component {
                     <ProviderDtlCard data={this.state.data} />
                 </div>
                 <div>
-                    <ProviderMap/>
+                    <ProviderMap data={this.state.data}/>
                 </div>
 
             </div>
