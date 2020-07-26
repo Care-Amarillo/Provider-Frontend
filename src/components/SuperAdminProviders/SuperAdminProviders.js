@@ -36,6 +36,9 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import AlertDialogSlide from "../AlertDialogSlide";
 import { ToastContainer, ToastMessage, ToastMessageAnimated } from "react-toastr";
+import IconButton from "@material-ui/core/IconButton";
+import Icon from "@material-ui/core/Icon";
+import {Link} from "react-router-dom";
 
 
 
@@ -76,34 +79,47 @@ const AuditTable = (props) => {
         <MaterialTable
             icons={tableIcons}
             columns={[
-                { title: "Date", field: "createdAt", type: "datetime", searchable:false },
-                {
-                    title: 'Created By',
-                    field: 'createdBy',
-                    render: rowData  => rowData.createdBy['email'],
-                    customFilterAndSearch: (term, rowData) => (rowData.createdBy['email']).indexOf(term) != -1
-                },
-                { title: "Table Reference", field: "ref" },
-                { title: "Action", field: "action" },
-                { title: "Endpoint", field: "endpoint" },
-                { title: "Request Method", field: "requestMethod" },
+                { title: "Creation Date", field: "createdAt", type: "datetime", searchable:false },
+                { title: "Name", field: "name" },
+                { title: "Active", field: "active" },
 
             ]}
             data={props.data}
-            title="Audit Entries"
+            title="Providers"
             options={{
                 sorting: true,
                 search: true,
-                exportButton: true,
-                exportCsv: (columns, data) => {
-                    props.setOpen();
+                // exportButton: true,
+                // exportCsv: (columns, data) => {
+                //     props.setOpen();
+                // }
+            }}
+            actions={[
+                {
+                    icon: 'edit',
+                    tooltip: 'Edit Provider',
+                    onClick: (event, rowData) => {
+                        // Do save operation
+                        console.log("editProvider");
+                    }
                 }
+            ]}
+            components={{
+                Action: props => (
+                    <IconButton aria-label="edit" size="small"
+                                onClick={(event) => props.action.onClick(event, props.data)}
+                                component={Link}
+                                to={`/superAdminEditProvider/${props.data._id}`}
+                    >
+                       <Edit/>
+                    </IconButton>
+                ),
             }}
         />
     </div>;
 }
 
-class AuditEntries extends Component {
+class SuperAdminProviders extends Component {
     constructor(props) {
         super(props);
 
@@ -114,9 +130,11 @@ class AuditEntries extends Component {
         todayMidNight.setHours(0,0,0,0);
         this.state = {
             entries: [],
+            providers: [],
             selectedStartDate: todayMidNight,
             selectedEndDate: midNight,
             open: false,
+            searchQuery: "",
             sheetsDialogOpen: false,
             alertTitle : "CSV Export Options",
             alertDescription : "How would you like your CSV to be exported?",
@@ -184,26 +202,25 @@ class AuditEntries extends Component {
     }
 
     componentDidMount() {
-        this.loadData();
+        this.loadProviderData();
     }
 
-    loadData = async () => {
+    loadProviderData = async () => {
 
-        let URL = "https://careamabrain.cmcoffee91.dev/auditEntries/"  + "?startDate=" +  this.state.selectedStartDate.toISOString()   + "&endDate=" + this.state.selectedEndDate.toISOString();
+        let URL = "https://careamabrain.cmcoffee91.dev/providers";
 
         this.setState({
-            entries: []
+            providers: []
         });
 
-
-        const config = {
-            "Authorization": `Bearer ${this.props.token}`
-        };
 
         const response = await axios({
             method: 'get',
             url: URL,
-            headers: config
+            params:{
+                searchQuery: this.state.searchQuery
+            }
+
         });
 
 
@@ -211,10 +228,13 @@ class AuditEntries extends Component {
         console.log("data " + JSON.stringify(data));
 
         this.setState({
-            entries: data
+            providers: data
         });
 
+
     }
+
+
 
     handleStartDateChange = (e) => {
         // setSelectedStartDate(e);
@@ -359,7 +379,7 @@ class AuditEntries extends Component {
 
         let response = await window.gapi.client.sheets.spreadsheets.create({
             properties: {
-                title: "Audit Entries"
+                title: "Providers"
             }
         });
 
@@ -492,16 +512,16 @@ class AuditEntries extends Component {
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
                                 }}
-                                />
+                            />
                         </div>
                     </MuiPickersUtilsProvider>
                 </div>
 
-                <AuditTable data={this.state.entries} setOpen={this.setOpen}/>
+                <AuditTable data={this.state.providers} setOpen={this.setOpen}/>
             </Container>
         );
 
     }
 }
 
-export default AuditEntries;
+export default SuperAdminProviders;

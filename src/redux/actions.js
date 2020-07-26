@@ -8,8 +8,6 @@ export const setToken = (stateObj) => {
         let AUTHENTICATE_URL = "https://careamabrain.cmcoffee91.dev/users/authenticate";
         // let AUTHENTICATE_URL = "http://localhost:3000/users/authenticate";
 
-        let newToken = null;
-
 
         let theUsername = stateObj.email;
         let thePassword = stateObj.password;
@@ -81,9 +79,32 @@ export const setProvider = (provider) => {
     }
 }
 
+export const unsetSWRegistration = (value) => {
+    return {
+        type: "UNSET_SWREGISTRATION",
+        value: value
+    }
+}
+
+
+export const setSWRegistration = (value) => {
+    return {
+        type: "SET_SWREGISTRATION",
+        value: value
+    }
+}
+
 export const unsetProvider = (providerToRemove) => {
     return {
         type: "UNSET_PROVIDER",
         value: providerToRemove
+    }
+}
+
+
+export const setOpen = (open) => {
+    return {
+        type: "SET_OPEN",
+        value: open
     }
 }

@@ -6,13 +6,13 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import './ProviderRegister.css';
 import AutoCompleteInput from "../GooglePlacesApi/AutoCompleteInput";
-import {Redirect} from "react-router-dom";
 import axios from "axios";
 import AlertDialogSlide from "../AlertDialogSlide";
-import {Steps, Hints} from "intro.js-react";
-import "intro.js/introjs.css";
+import {ToastContainer} from "react-toastr";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const getSteps = () => {
-    return ['Contact Info', 'Location Info', 'Inventory Info'];
+    return ['Contact Info', 'Location Info', 'Inventory Info', 'Status'];
 }
 
 const FormOne = (props) => {
@@ -145,6 +145,34 @@ const FormThree = (props) => {
     </form>;
 }
 
+
+const FormFour = (props) => {
+    const classes = useStyles();
+    const registerComponent = props.registerComponent;
+
+
+
+    const handleActiveChange = (e) => {
+        console.log("active" + e.target.checked);
+        registerComponent.setState({
+            active: e.target.checked,
+        });
+    };
+    return <form className={classes.form} noValidate autoComplete="off">
+        <FormControlLabel
+            control={
+                <Switch
+                    checked={registerComponent.state.active}
+                    onChange={handleActiveChange}
+                    name="active"
+                    color="primary"
+                />
+            }
+            label="Active"
+        />
+    </form>;
+}
+
 const getStepContent = (step, registerComponent) => {
     switch (step) {
         case 0:
@@ -153,6 +181,8 @@ const getStepContent = (step, registerComponent) => {
             return <FormTwo registerComponent={registerComponent}/>;
         case 2:
             return <FormThree registerComponent={registerComponent}/>;
+        case 3:
+            return <FormFour registerComponent={registerComponent}/>;
         default:
             return 'Unknown step';
     }
@@ -208,7 +238,7 @@ const HorizontalLinearStepper = (props) => {
     const slideAlertCallback = (isTrue) => {
         if (isTrue) {
             console.log("is true");
-            registerComponent.register();
+            registerComponent.updateProvider();
         } else {
             console.log("is false");
         }
@@ -269,7 +299,7 @@ const HorizontalLinearStepper = (props) => {
                     <Typography
                         className={classes.instructions}>{getStepContent(activeStep, registerComponent)}</Typography>
                     <div>
-                        <Button disabled={activeStep === 0} id="backButton" onClick={handleBack} className={classes.button}>
+                        <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
                             Back
                         </Button>
 
@@ -277,7 +307,6 @@ const HorizontalLinearStepper = (props) => {
                         <Button
                             variant="contained"
                             color="primary"
-                            id="nextButton"
                             onClick={activeStep === steps.length - 1 ? askForConfirmation : handleNext}
                             className={classes.button}
                         >
@@ -291,26 +320,13 @@ const HorizontalLinearStepper = (props) => {
     );
 }
 
-const TutorialButton = (props) => {
-    const handleClick = ()=>{
-        console.log("handleClick");
-        props.toggleSteps();
-    }
 
-    return <Button variant="contained"
-                   id="tutorialButton"
-                   color="primary"
-                   onClick={handleClick}
-            >
-     Help
-    </Button>;
-}
-
-class ProviderRegister extends Component {
+class SuperAdminEditProvider extends Component {
     constructor(props) {
         super(props);
         this.state = {
             jwt: "",
+            providerId: "",
             name: "",
             title: "",
             phone: "",
@@ -323,35 +339,8 @@ class ProviderRegister extends Component {
             long: "",
             bedsUsed: "0",
             createProvider: false,
+            active: false,
             isCreated: false,
-            stepsEnabled: false,
-            initialStep: 0,
-            steps: [
-                {
-                    element: "#placesAuto",
-                    intro: "Search for your entity here. It will fill in most of the information for you!"
-                },
-                {
-                    element: "#backButton",
-                    intro: "Use this to go back between info"
-                },
-                {
-                    element: "#nextButton",
-                    intro: "Use this button to move forward with the info"
-                },
-                {
-                    element: "#tutorialButton",
-                    intro: "Use this button to view this tutorial again"
-                },
-            ],
-            hintsEnabled: true,
-            hints: [
-                {
-                    element: ".hello",
-                    hint: "Hello hint",
-                    hintPosition: "middle-right"
-                }
-            ]
         }
     }
 
@@ -432,8 +421,8 @@ class ProviderRegister extends Component {
         });
     }
 
-    register = async () => {
-        let URL = "https://careamabrain.cmcoffee91.dev/providers";
+    updateProvider = async () => {
+        let URL = "https://careamabrain.cmcoffee91.dev/providers/" + this.state.providerId;
         // let URL = "http://localhost:3000/users/authenticate";
 
 
@@ -444,7 +433,7 @@ class ProviderRegister extends Component {
         };
 
         const response = await axios({
-            method: 'post',
+            method: 'put',
             url: URL,
             data: {
                 name: this.state.name,
@@ -457,7 +446,7 @@ class ProviderRegister extends Component {
                 lat: this.state.lat.toString(),
                 long: this.state.long.toString(),
                 type: 1,
-                active: true,
+                active: this.state.active,
                 totalBeds: parseInt(this.state.totalBeds),
                 bedsUsed: parseInt(this.state.bedsUsed),
             },
@@ -468,15 +457,13 @@ class ProviderRegister extends Component {
         const data = await response.data;
         console.log("data " + JSON.stringify(data));
         const msg = data.Message;
-        const user = data.updatedUser;
+        const provider = data.provider;
         console.log("msg " + msg);
 
-        if (msg === "Provider created successfully") {
+        if (msg === "Updated Provider successfully") {
             console.log("successfully created provider");
-            // await this.login();
-            this.props.setUser(user);
-            this.setState({
-                isCreated: true
+            this.container.success(`Provider Updated`, `Success`, {
+                closeButton: true,
             });
         } else {
             console.log("unsuccessfully created provider");
@@ -485,33 +472,61 @@ class ProviderRegister extends Component {
     }
 
 
-    onExit = () => {
-        this.setState(() => ({stepsEnabled: false}));
-    };
-
-    toggleSteps = () => {
-        this.setState(prevState => ({stepsEnabled: !prevState.stepsEnabled}));
-    };
-
-
     componentDidMount() {
+        const id = this.props.match.params.id;
+        console.log("provider id : " + id);
+        this.setState({
+            // data: this.props.location.state.data,
+            providerId: id
+        }, () => {
+            this.loadData();
+        });
+    }
+
+    loadData = async () => {
+
+        let URL = "https://careamabrain.cmcoffee91.dev/providers/" + this.state.providerId;
+
+
+        const response = await axios({
+            method: 'get',
+            url: URL,
+        });
+
+        const data = await response.data;
+        console.log("data " + JSON.stringify(data));
+        console.log("data length:" + data.length);
+        let provider = data;
+        console.log("provider title is " + provider.title);
+        this.setState({
+            name: provider.name,
+            title: provider.title,
+            phone: provider.phone,
+            email: provider.email,
+            address: provider.address,
+            place_id: provider.place_id,
+            zip: provider.zip,
+            totalBeds: provider.totalBeds,
+            lat: provider.lat,
+            long: provider.long,
+            active: provider.active,
+            bedsUsed: provider.bedsUsed,
+            providerId: provider._id,
+        });
+
+
     }
 
     render() {
-        return !this.state.isCreated ? (
-            <div id="registerContainer">
-                <Steps
-                    enabled={this.state.stepsEnabled}
-                    steps={this.state.steps}
-                    initialStep={this.state.initialStep}
-                    onExit={this.onExit}
-                />
-                <HorizontalLinearStepper registerComponent={this}/>
-                <AutoCompleteInput  onChange={this.gotPlace}/>
-                <TutorialButton toggleSteps={this.toggleSteps}/>
-            </div>
-        ) : <Redirect to="/provider"/>;
+        return <div id="registerContainer">
+            <ToastContainer
+                ref={ref => this.container = ref}
+                className="toast-bottom-right"
+            />
+            <HorizontalLinearStepper registerComponent={this}/>
+            <AutoCompleteInput onChange={this.gotPlace}/>
+        </div>;
     }
 }
 
-export default ProviderRegister;
+export default SuperAdminEditProvider;

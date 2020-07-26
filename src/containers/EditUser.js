@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import EditProvider from "../components/Provider/EditProvider";
 import {setUser} from "../redux/actions";
+import EditUser from "../components/User/EditUser";
 
 const mapStateToProps = (state) => {
     return {
@@ -16,4 +16,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditProvider);
+export default connect(mapStateToProps, mapDispatchToProps)(EditUser);

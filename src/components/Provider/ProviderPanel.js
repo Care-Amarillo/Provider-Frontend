@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import './ProviderPanel.css';
 import {Link} from "react-router-dom";
 
+
 class ProviderPanel extends Component {
 
     constructor(props){
@@ -16,8 +17,11 @@ class ProviderPanel extends Component {
         }
     }
 
+
+
     componentDidMount(){
         this.loadData();
+
     }
 
     searchChanged = (e) => {
@@ -31,18 +35,8 @@ class ProviderPanel extends Component {
 
     loadData = async () => {
 
-        // const response = await fetch(URL, {
-        //     // mode: 'no-cors',
-        //     method: 'GET',
-        //     headers: {
-        //         Accept: 'application/json',
-        //     },
-        // },);
 
-        // const data = await response.json();
-        // console.log("data " + JSON.stringify(data));
-
-        let URL = "https://careamabrain.cmcoffee91.dev/providers";
+        let URL = "https://careamabrain.cmcoffee91.dev/providersActive";
         // let URL = "http://localhost:3000/providers";
 
         this.setState({

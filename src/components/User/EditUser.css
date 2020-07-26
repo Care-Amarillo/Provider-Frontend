@@ -7,10 +7,6 @@
 #doubleCheckInfo{
     display: flex;
     flex-direction: column;
-    justify-content: center;
-}
-
-#tutorialButton{
-    margin-top: 8px;
+    justify-content: space-evenly;
 }
 

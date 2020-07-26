@@ -1,11 +1,12 @@
 import { connect } from 'react-redux';
-import CareAppDrawer from "../components/CareAppBar/CareAppDrawer";
-import {setOpen, unsetToken, unsetUser} from "../redux/actions";
+import {unsetToken, unsetUser, setOpen} from "../redux/actions";
+import CareAppNav from "../components/CareAppBar/CareAppNav";
 
 const mapStateToProps = (state) => {
     return {
         token: state.token,
         user: state.user,
+        mobileOpen: state.mobileOpen,
         provider: state.provider,
     }
 }
@@ -21,4 +22,4 @@ const mapDispatchToProps = (dispatch) => {
 
 
 
-export default connect(mapStateToProps,mapDispatchToProps)(CareAppDrawer);
+export default connect(mapStateToProps,mapDispatchToProps)(CareAppNav);

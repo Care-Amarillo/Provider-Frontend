@@ -61,6 +61,7 @@ const AutoCompleteInput = (props) => {
         <div className="search-location-input">
             {/*<TextField*/}
             <input
+                id="placesAuto"
                 ref={autoCompleteRef}
                 onChange={event => setQuery(event.target.value)}
                 value={query}

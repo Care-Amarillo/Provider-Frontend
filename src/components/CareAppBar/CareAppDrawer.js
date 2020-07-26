@@ -8,7 +8,6 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Home from "@material-ui/icons/Home";
 import ListItemText from "@material-ui/core/ListItemText";
 import {makeStyles} from "@material-ui/core/styles";
-import Providers from "../Providers/Providers";
 
 
 const drawerWidth = 240;
@@ -44,8 +43,8 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const LoginListItem = () => {
-    return <ListItem key="login" component={Link} to={"/login"}>
+const LoginListItem = (props) => {
+    return <ListItem key="login" onClick={()=>props.handleClick()} component={Link} to={"/login"}>
         <ListItemIcon>
             <AccountCircleIcon/>
 
@@ -55,8 +54,8 @@ const LoginListItem = () => {
 }
 
 
-const RegisterListItem = () => {
-    return <ListItem key="register" component={Link} to={"/register"}>
+const RegisterListItem = (props) => {
+    return <ListItem key="register" onClick={()=>props.handleClick()} component={Link} to={"/register"}>
         <ListItemIcon>
             <AccountCircleIcon/>
 
@@ -65,8 +64,8 @@ const RegisterListItem = () => {
     </ListItem>;
 }
 
-const AuditListItem = () => {
-    return <ListItem key="audit" component={Link} to={"/audit"}>
+const AuditListItem = (props) => {
+    return <ListItem key="audit" onClick={()=>props.handleClick()} component={Link} to={"/audit"}>
         <ListItemIcon>
             <AccountCircleIcon/>
 
@@ -75,8 +74,11 @@ const AuditListItem = () => {
     </ListItem>;
 }
 
-const ProviderListItem = () => {
-    return <ListItem key="provider" component={Link} to={"/provider"}>
+const ProviderListItem = (props) => {
+
+
+
+    return <ListItem key="provider"  onClick={()=>props.handleClick()} component={Link} to={"/provider"}>
         <ListItemIcon>
             <Home/>
 
@@ -86,8 +88,9 @@ const ProviderListItem = () => {
 }
 
 
-const ProviderEntryListItem = () => {
-    return <ListItem key="providerEntries" component={Link} to={"/providerEntry"}>
+const ProviderEntryListItem = (props) => {
+
+    return <ListItem key="providerEntries" onClick={()=>props.handleClick()} component={Link} to={"/providerEntry"}>
         <ListItemIcon>
             <AccountCircleIcon/>
 
@@ -96,8 +99,8 @@ const ProviderEntryListItem = () => {
     </ListItem>;
 }
 
-const ProviderSignUpListItem = () => {
-    return <ListItem key="providerSignUp" component={Link} to={"/providerSignUp"}>
+const ProviderSignUpListItem = (props) => {
+    return <ListItem key="providerSignUp" onClick={()=>props.handleClick()} component={Link} to={"/providerSignUp"}>
         <ListItemIcon>
             <AccountCircleIcon/>
 
@@ -107,8 +110,8 @@ const ProviderSignUpListItem = () => {
 }
 
 
-const EditProviderListItem = () => {
-    return <ListItem key="editProvider" component={Link} to={"/editProvider"}>
+const EditProviderListItem = (props) => {
+    return <ListItem key="editProvider" onClick={()=>props.handleClick()} component={Link} to={"/editProvider"}>
         <ListItemIcon>
             <AccountCircleIcon/>
 
@@ -119,8 +122,9 @@ const EditProviderListItem = () => {
 
 
 
-const UserListItem = () => {
-    return <ListItem key="Profile" component={Link} to={"/editUser"}>
+const UserListItem = (props) => {
+
+    return <ListItem key="Profile" onClick={()=>props.handleClick()} component={Link} to={"/editUser"}>
         <ListItemIcon>
             <AccountCircleIcon/>
 
@@ -129,11 +133,24 @@ const UserListItem = () => {
     </ListItem>;
 }
 
+const SuperAdminProvidersListItem = (props) => {
+
+    return <ListItem key="superAdminProviders" onClick={()=>props.handleClick()} component={Link} to={"/superAdminProviders"}>
+        <ListItemIcon>
+            <AccountCircleIcon/>
+
+        </ListItemIcon>
+        <ListItemText primary="Manage Providers"/>
+    </ListItem>;
+}
+
+
 
 const LogOutListItem = (props) => {
     const handleClick = () =>{
         props.drawerProps.unsetToken(props.drawerProps.token);
         props.drawerProps.unsetUser(props.drawerProps.user);
+        props.handleClick();
     }
     return <ListItem key="logOut" onClick={()=>handleClick()}>
         <ListItemIcon>
@@ -151,32 +168,41 @@ const CareAppDrawer = (props) => {
     const classes = useStyles();
     const listOfListItems = [];
 
+    const handleClick = () =>{
+        console.log("handleclick");
+        props.setOpen(false);
+    }
+
     console.log("props.token appDrawer: " + props.token);
     console.log("props.user appDrawer: " + JSON.stringify(props.user));
 
     //todo: check active status of user and providers
 
-    listOfListItems.push(<ProviderListItem/>);
+    listOfListItems.push(<ProviderListItem handleClick={handleClick}/>);
     // listOfListItems.push(<RegisterListItem/>);
 
     //if user is there and is NOT an admin, add to the list
     if (props.token && props.user && !props.user.admin) {
-        listOfListItems.push(<ProviderSignUpListItem/>);
+        listOfListItems.push(<ProviderSignUpListItem handleClick={handleClick}/>);
     }
 
     //if user is there and is an admin, add to the list
     //user will only have provider if they are an admin
     if (props.token && props.user && props.user.admin) {
-        listOfListItems.push(<EditProviderListItem/>);
+        listOfListItems.push(<EditProviderListItem handleClick={handleClick}/>);
+    }
+
+    if (props.token && props.user && props.user.superAdmin) {
+        listOfListItems.push(<AuditListItem handleClick={handleClick}/>);
+        listOfListItems.push(<SuperAdminProvidersListItem handleClick={handleClick}/>);
     }
 
     if (props.token) {
-        listOfListItems.push(<AuditListItem/>);
-        listOfListItems.push(<ProviderEntryListItem/>);
-        listOfListItems.push(<UserListItem/>);
-        listOfListItems.push(<LogOutListItem drawerProps={props}/>);
+        listOfListItems.push(<ProviderEntryListItem handleClick={handleClick}/>);
+        listOfListItems.push(<UserListItem handleClick={handleClick}/>);
+        listOfListItems.push(<LogOutListItem handleClick={handleClick} drawerProps={props}/>);
     } else {
-        listOfListItems.push(<LoginListItem/>);
+        listOfListItems.push(<LoginListItem handleClick={handleClick}/>);
     }
 
 

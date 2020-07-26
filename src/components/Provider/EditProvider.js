@@ -306,6 +306,7 @@ class EditProvider extends Component {
             long: "",
             bedsUsed: "0",
             createProvider: false,
+            active: false,
             isCreated: false,
         }
     }
@@ -413,7 +414,7 @@ class EditProvider extends Component {
                 lat: this.state.lat.toString(),
                 long: this.state.long.toString(),
                 type:1,
-                active:true,
+                active:this.state.active,
                 totalBeds: parseInt(this.state.totalBeds),
                 bedsUsed: parseInt(this.state.bedsUsed),
             },
@@ -475,16 +476,13 @@ class EditProvider extends Component {
                 place_id: provider.place_id,
                 zip: provider.zip,
                 totalBeds: provider.totalBeds,
+                active: provider.active,
                 lat: provider.lat,
                 long: provider.long,
                 bedsUsed: provider.bedsUsed,
                 providerId: provider._id,
             });
         }
-
-
-
-
 
 
     }

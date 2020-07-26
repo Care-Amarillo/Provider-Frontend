@@ -3,6 +3,11 @@ import Hidden from "@material-ui/core/Hidden";
 import Drawer from "@material-ui/core/Drawer";
 import {makeStyles, useTheme} from "@material-ui/core/styles";
 import CareAppDrawer from "../../containers/CareAppDrawer";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
+import Typography from "@material-ui/core/Typography";
 
 
 const drawerWidth = 240;
@@ -37,6 +42,8 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+
+
 // simply write a function in ES6+ then pass in the keyword props to access this special object
 const CareAppNav = (props) => {
     const classes = useStyles();
@@ -44,13 +51,38 @@ const CareAppNav = (props) => {
     // notice the ( ) after the return. This is called an implicit return
     const { container } = props;
     const theme = useTheme();
-    const [mobileOpen, setMobileOpen] = React.useState(false);
 
     const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
+        console.log("handle drawer toggle");
+        // setMobileOpen(!mobileOpen);
+        props.setOpen(!props.mobileOpen);
     };
 
+
+    // todo: maybe change to functional component
+    const appBar = (
+        <AppBar position="fixed" className={classes.appBar}>
+            <Toolbar>
+                <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    edge="start"
+                    onClick={handleDrawerToggle}
+                    className={classes.menuButton}
+                >
+                    <MenuIcon />
+                </IconButton>
+                <Typography variant="h6" noWrap>
+                    Care Amarillo
+                </Typography>
+            </Toolbar>
+        </AppBar>
+    );
+
     return (
+
+        <div>
+            {appBar}
         <nav className={classes.drawer} aria-label="mailbox folders">
             {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
             <Hidden smUp implementation="css">
@@ -58,7 +90,7 @@ const CareAppNav = (props) => {
                     container={container}
                     variant="temporary"
                     anchor={theme.direction === "rtl" ? "right" : "left"}
-                    open={mobileOpen}
+                    open={props.mobileOpen}
                     onClose={handleDrawerToggle}
                     classes={{
                         paper: classes.drawerPaper
@@ -83,6 +115,7 @@ const CareAppNav = (props) => {
                 </Drawer>
             </Hidden>
         </nav>
+        </div>
     )
 }
 

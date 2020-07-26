@@ -9,6 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import './Register.css';
 import {Redirect} from "react-router-dom";
 import axios from "axios";
+import AlertDialogSlide from "../AlertDialogSlide";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -112,6 +113,25 @@ const HorizontalLinearStepper = (props) => {
     const steps = getSteps();
     const registerComponent = props.registerComponent;
     const registerState = registerComponent.state;
+    const [open, setOpen] = React.useState(false);
+    const alertTitle = "Are You Sure?";
+    const yesOptionTitle = "Yes";
+    const noOptionTitle = "Cancel";
+
+    const alertDescription = <div>
+        <div>
+            First Name: {registerState.firstName}
+        </div>
+        <div>
+            Last Name: {registerState.lastName}
+        </div>
+        <div>
+            Phone: {registerState.phone}
+        </div>
+        <div>
+            Email: {registerState.email}
+        </div>
+    </div>;
 
 
     const isStepOptional = (step) => {
@@ -138,6 +158,19 @@ const HorizontalLinearStepper = (props) => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
+    const slideAlertCallback = (isTrue) => {
+        if (isTrue) {
+            console.log("is true");
+            registerComponent.register();
+        } else {
+            console.log("is false");
+        }
+    }
+
+    const askForConfirmation = () => {
+        setOpen(true);
+    }
+
     const handleSkip = () => {
         if (!isStepOptional(activeStep)) {
             // You probably want to guard against something like this,
@@ -159,6 +192,8 @@ const HorizontalLinearStepper = (props) => {
 
     return (
         <div className={classes.root}>
+            <AlertDialogSlide open={open} setOpen={setOpen} alertSlideCallback={slideAlertCallback} title={alertTitle}
+                              description={alertDescription} yesOptionTitle={yesOptionTitle} noOptionTitle={noOptionTitle}/>
             <Stepper activeStep={activeStep} orientation={"horizontal"}>
                 {steps.map((label, index) => {
                     const stepProps = {};
@@ -214,7 +249,7 @@ const HorizontalLinearStepper = (props) => {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={handleNext}
+                                onClick={activeStep === steps.length - 1 ? askForConfirmation : handleNext}
                                 className={classes.button}
                             >
                                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}

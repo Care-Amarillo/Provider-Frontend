@@ -23,7 +23,28 @@ const provider = (state = null, action) => {
 }
 
 
+const mobileOpen = (state = null, action) => {
+    switch(action.type) {
+        case "SET_OPEN":
+            return action.value;
+        case "UNSET_OPEN":
+            return null;
+        default:
+            return state;
+    }
+}
 
+
+const swRegistration = (state = null, action) => {
+    switch (action.type) {
+        case "SET_SWREGISTRATION":
+            return action.value;
+        case "UNSET_SWREGISTRATION":
+            return null;
+        default:
+            return state;
+    }
+}
 
 const token = (state = null, action) => {
     switch (action.type) {
@@ -36,4 +57,4 @@ const token = (state = null, action) => {
     }
 }
 
-export default combineReducers({ user, token })
+export default combineReducers({ user, token, provider, mobileOpen, swRegistration })
