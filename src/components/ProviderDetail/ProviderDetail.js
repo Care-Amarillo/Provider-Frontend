@@ -45,6 +45,14 @@ const useStyles = makeStyles({
     pos: {
         marginBottom: 12,
     },
+    button:{
+        backgroundColor:"#132C3C",
+        color:"white",
+        '&:hover': {
+            backgroundColor: "lightgrey",
+            color: '#000000'
+        }
+    }
 });
 
 const ProviderMap = (props) => {
@@ -102,7 +110,7 @@ const ProviderDtlCard = (props) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button variant="contained" color="primary">
+                <Button variant="contained" className={classes.button}>
                     <Link className="barLink"   to={{
                         pathname:"/providerDtl",
                         state: {
@@ -134,7 +142,7 @@ const ProviderDtlPhoneCard = (props) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button variant="contained" color="primary">
+                <Button variant="contained" className={classes.button}>
                     <a id="dtlLink" href={href}>CALL US!</a>
                 </Button>
             </CardActions>
@@ -282,7 +290,7 @@ const ProviderDtlFavoriteCard = (props) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button variant="contained" color="primary" onClick={()=>handlePushSub()}>
+                <Button variant="contained" className={classes.button} onClick={()=>handlePushSub()}>
                     SUBSCRIBE
                 </Button>
             </CardActions>
@@ -310,7 +318,7 @@ const ProviderDtlEmailCard = (props) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button variant="contained" color="primary">
+                <Button variant="contained" className={classes.button}>
                     <a id="dtlLink" href={href}>EMAIL US!</a>
                 </Button>
             </CardActions>
@@ -378,7 +386,7 @@ const ProviderDtlShareCard = (props) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button onClick={()=> shareProvider()}  variant="contained"  color="primary">
+                <Button onClick={()=> shareProvider()}  variant="contained"  className={classes.button}>
                     Share!
                 </Button>
             </CardActions>
@@ -414,7 +422,7 @@ const ProviderDtlAddressCard = (props) => {
     let directionComponent = <div></div>;
 
     if(lat !== "0.0" && long !== "0.0"){
-        directionComponent = <Button variant="contained" color="primary">
+        directionComponent = <Button variant="contained" className={classes.button}>
             <a id="dtlLink" target="_blank" href={directionsToUse}>GET DIRECTIONS</a>
         </Button>;
     }

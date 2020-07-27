@@ -13,6 +13,19 @@ import axios from "axios";
 import AlertDialogSlide from "../AlertDialogSlide";
 import {Steps, Hints} from "intro.js-react";
 import "intro.js/introjs.css";
+import {createMuiTheme} from '@material-ui/core/styles';
+import {ThemeProvider} from "@material-ui/styles";
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: "#132C3C",
+        },
+        secondary: {
+            main: "#132C3C",
+        },
+    },
+});
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -67,16 +80,18 @@ const FormOne = (props) => {
             phone: e.target.value,
         });
     };
-    return <form className={classes.form} noValidate autoComplete="off">
-        <TextField id="name" label="Name" onChange={onChangeName} value={registerComponent.state.name}
-                   variant="outlined"/>
-        <TextField id="title" label="Title" value={registerComponent.state.title} onChange={onChangeTitle}
-                   variant="outlined"/>
-        <TextField id="phone" label="Phone Number" onChange={onChangePhone} value={registerComponent.state.phone}
-                   type="number" variant="outlined"/>
-        <TextField id="email" label="Email" onChange={onChangeEmail} value={registerComponent.state.email}
-                   variant="outlined"/>
-    </form>;
+    return <ThemeProvider theme={theme}>
+        <form className={classes.form} noValidate autoComplete="off">
+            <TextField id="name" label="Name" onChange={onChangeName} value={registerComponent.state.name}
+                       variant="outlined"/>
+            <TextField id="title" label="Title" value={registerComponent.state.title} onChange={onChangeTitle}
+                       variant="outlined"/>
+            <TextField id="phone" label="Phone Number" onChange={onChangePhone} value={registerComponent.state.phone}
+                       type="number" variant="outlined"/>
+            <TextField id="email" label="Email" onChange={onChangeEmail} value={registerComponent.state.email}
+                       variant="outlined"/>
+        </form>
+    </ThemeProvider>;
 }
 
 const FormTwo = (props) => {
@@ -108,16 +123,18 @@ const FormTwo = (props) => {
             zip: e.target.value,
         });
     };
-    return <form className={classes.form} noValidate autoComplete="off">
-        {/*<TextField id="latitude" label="Latitude" onChange={onChangeLatitude} value={registerComponent.state.lat}*/}
-        {/*           variant="outlined"/>*/}
-        {/*<TextField id="longitude" label="Longitude" onChange={onChangeLongitude} value={registerComponent.state.long}*/}
-        {/*           variant="outlined"/>*/}
-        <TextField id="address" label="Address" onChange={onChangeAddress} value={registerComponent.state.address}
-                   variant="outlined"/>
-        <TextField id="zip" label="Zip" onChange={onChangeZip} value={registerComponent.state.zip}
-                   variant="outlined"/>
-    </form>;
+    return <ThemeProvider theme={theme}>
+        <form className={classes.form} noValidate autoComplete="off">
+            {/*<TextField id="latitude" label="Latitude" onChange={onChangeLatitude} value={registerComponent.state.lat}*/}
+            {/*           variant="outlined"/>*/}
+            {/*<TextField id="longitude" label="Longitude" onChange={onChangeLongitude} value={registerComponent.state.long}*/}
+            {/*           variant="outlined"/>*/}
+            <TextField id="address" label="Address" onChange={onChangeAddress} value={registerComponent.state.address}
+                       variant="outlined"/>
+            <TextField id="zip" label="Zip" onChange={onChangeZip} value={registerComponent.state.zip}
+                       variant="outlined"/>
+        </form>
+    </ThemeProvider>;
 }
 
 
@@ -137,12 +154,15 @@ const FormThree = (props) => {
             bedsUsed: e.target.value,
         });
     };
-    return <form className={classes.form} noValidate autoComplete="off">
-        <TextField id="totalBeds" label="Total Beds" onChange={onChangeTotalBeds}
-                   value={registerComponent.state.totalBeds} variant="outlined"/>
-        <TextField id="bedsUsed" label="Used Beds" onChange={onChangeUsedBeds} value={registerComponent.state.bedsUsed}
-                   variant="outlined"/>
-    </form>;
+    return <ThemeProvider theme={theme}>
+        <form className={classes.form} noValidate autoComplete="off">
+            <TextField id="totalBeds" label="Total Beds" onChange={onChangeTotalBeds}
+                       value={registerComponent.state.totalBeds} variant="outlined"/>
+            <TextField id="bedsUsed" label="Used Beds" onChange={onChangeUsedBeds}
+                       value={registerComponent.state.bedsUsed}
+                       variant="outlined"/>
+        </form>
+    </ThemeProvider>;
 }
 
 const getStepContent = (step, registerComponent) => {
@@ -247,29 +267,32 @@ const HorizontalLinearStepper = (props) => {
             <AlertDialogSlide open={open} setOpen={setOpen} alertSlideCallback={slideAlertCallback} title={alertTitle}
                               description={alertDescription} yesOptionTitle={yesOptionTitle}
                               noOptionTitle={noOptionTitle}/>
-            <Stepper activeStep={activeStep} orientation={"horizontal"}>
-                {steps.map((label, index) => {
-                    const stepProps = {};
-                    const labelProps = {};
-                    if (isStepOptional(index)) {
-                        labelProps.optional = <Typography variant="caption">Optional</Typography>;
-                    }
-                    if (isStepSkipped(index)) {
-                        stepProps.completed = false;
-                    }
-                    return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
-                        </Step>
-                    );
-                })}
-            </Stepper>
+            <ThemeProvider theme={theme}>
+                <Stepper activeStep={activeStep} nonLinear orientation={"horizontal"}>
+                    {steps.map((label, index) => {
+                        const stepProps = {};
+                        const labelProps = {};
+                        if (isStepOptional(index)) {
+                            labelProps.optional = <Typography variant="caption">Optional</Typography>;
+                        }
+                        if (isStepSkipped(index)) {
+                            stepProps.completed = false;
+                        }
+                        return (
+                            <Step key={label} {...stepProps}>
+                                <StepLabel {...labelProps}>{label}</StepLabel>
+                            </Step>
+                        );
+                    })}
+                </Stepper>
+            </ThemeProvider>
             <div>
                 <div>
                     <Typography
                         className={classes.instructions}>{getStepContent(activeStep, registerComponent)}</Typography>
                     <div>
-                        <Button disabled={activeStep === 0} id="backButton" onClick={handleBack} className={classes.button}>
+                        <Button disabled={activeStep === 0} id="backButton" onClick={handleBack}
+                                className={classes.button}>
                             Back
                         </Button>
 
@@ -292,7 +315,7 @@ const HorizontalLinearStepper = (props) => {
 }
 
 const TutorialButton = (props) => {
-    const handleClick = ()=>{
+    const handleClick = () => {
         console.log("handleClick");
         props.toggleSteps();
     }
@@ -301,8 +324,8 @@ const TutorialButton = (props) => {
                    id="tutorialButton"
                    color="primary"
                    onClick={handleClick}
-            >
-     Help
+    >
+        Help
     </Button>;
 }
 
@@ -507,7 +530,7 @@ class ProviderRegister extends Component {
                     onExit={this.onExit}
                 />
                 <HorizontalLinearStepper registerComponent={this}/>
-                <AutoCompleteInput  onChange={this.gotPlace}/>
+                <AutoCompleteInput onChange={this.gotPlace}/>
                 <TutorialButton toggleSteps={this.toggleSteps}/>
             </div>
         ) : <Redirect to="/provider"/>;

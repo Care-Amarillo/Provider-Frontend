@@ -10,6 +10,18 @@ import './EditUser.css';
 import axios from "axios";
 import AlertDialogSlide from "../AlertDialogSlide";
 import {ToastContainer} from "react-toastr";
+import { createMuiTheme } from '@material-ui/core/styles';
+import {ThemeProvider} from "@material-ui/styles";
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: "#132C3C",
+        },
+        secondary: {
+            main: "#132C3C",
+        },
+    },
+});
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -17,6 +29,15 @@ const useStyles = makeStyles((theme) => ({
     },
     button: {
         marginRight: theme.spacing(1),
+        backgroundColor:"#132C3C",
+        color:"white",
+        '&:disabled':{
+            backgroundColor:"lightgrey"
+        },
+        '&:hover': {
+            backgroundColor: "#132C3C",
+            color: '#FFFFFF'
+        }
     },
     instructions: {
         marginTop: theme.spacing(1),
@@ -54,11 +75,11 @@ const FormOne = (props) => {
     };
 
 
-    return <form className={classes.form} noValidate autoComplete="off">
+    return <ThemeProvider theme={theme}> <form className={classes.form} noValidate autoComplete="off">
         <TextField id="firstName" label="First Name" value={registerComponent.state.fName} onChange={onChangeFirstName} variant="outlined"/>
         <TextField id="lastName" label="Last Name" onChange={onChangeLastName} value={registerComponent.state.lName} variant="outlined"/>
 
-    </form>;
+    </form></ThemeProvider>;
 }
 
 const FormTwo = (props) => {
@@ -77,11 +98,11 @@ const FormTwo = (props) => {
         });
     };
 
-    return <form className={classes.form} noValidate autoComplete="off">
+    return <ThemeProvider theme={theme}> <form className={classes.form} noValidate autoComplete="off">
         <TextField id="email" label="Email" onChange={onChangeEmail} value={registerComponent.state.email} variant="outlined"/>
         <TextField id="phone" label="Phone Number" onChange={onChangePhone} value={registerComponent.state.phone} type="number" variant="outlined"/>
 
-    </form>;
+    </form></ThemeProvider>;
 }
 
 const getStepContent = (step, registerComponent) => {
@@ -185,6 +206,7 @@ const HorizontalLinearStepper = (props) => {
         <div className={classes.root}>
             <AlertDialogSlide open={open} setOpen={setOpen} alertSlideCallback={slideAlertCallback} title={alertTitle}
                               description={alertDescription} yesOptionTitle={yesOptionTitle} noOptionTitle={noOptionTitle}/>
+            <ThemeProvider theme={theme}>
             <Stepper activeStep={activeStep} orientation={"horizontal"}>
                 {steps.map((label, index) => {
                     const stepProps = {};
@@ -202,6 +224,7 @@ const HorizontalLinearStepper = (props) => {
                     );
                 })}
             </Stepper>
+            </ThemeProvider>
             <div>
                 {activeStep === steps.length ? (
                     <div>

@@ -26,7 +26,7 @@ const CareAppBar = () => {
     const classes = useStyles();
     return (
         <div className={classes.root}>
-            <AppBar position="fixed">
+            <AppBar  style={{ backgroundColor: '#2196F3' }} position="fixed">
                 <Toolbar>
                     <Typography variant="h6">Care Amarillo</Typography>
                 </Toolbar>

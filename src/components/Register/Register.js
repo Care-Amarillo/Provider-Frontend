@@ -10,6 +10,19 @@ import './Register.css';
 import {Redirect} from "react-router-dom";
 import axios from "axios";
 import AlertDialogSlide from "../AlertDialogSlide";
+import {createMuiTheme} from '@material-ui/core/styles';
+import {ThemeProvider} from "@material-ui/styles";
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: "#132C3C",
+        },
+        secondary: {
+            main: "#132C3C",
+        },
+    },
+});
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,11 +71,11 @@ const FormOne = (props) => {
             phone: e.target.value,
         });
     };
-    return <form className={classes.form} noValidate autoComplete="off">
+    return <ThemeProvider theme={theme}> <form className={classes.form} noValidate autoComplete="off">
         <TextField id="firstName" label="First Name" onChange={onChangeFirstName} variant="outlined"/>
         <TextField id="lastName" label="Last Name" onChange={onChangeLastName} variant="outlined"/>
         <TextField id="phone" label="Phone Number" onChange={onChangePhone} type="number" variant="outlined"/>
-    </form>;
+    </form></ThemeProvider>;
 }
 
 const FormTwo = (props) => {
@@ -86,12 +99,12 @@ const FormTwo = (props) => {
             confirmPassword: e.target.value,
         });
     };
-    return <form className={classes.form} noValidate autoComplete="off">
+    return <ThemeProvider theme={theme}> <form className={classes.form} noValidate autoComplete="off">
         <TextField id="email" label="Email" onChange={onChangeEmail} variant="outlined"/>
         <TextField id="password" label="Password" onChange={onChangePass} type="password" variant="outlined"/>
         <TextField id="confirmPassword" label="Confirm Password" onChange={onChangeConfirmPass} type="password"
                    variant="outlined"/>
-    </form>;
+    </form> </ThemeProvider>;
 }
 
 const getStepContent = (step, registerComponent) => {
@@ -194,7 +207,8 @@ const HorizontalLinearStepper = (props) => {
         <div className={classes.root}>
             <AlertDialogSlide open={open} setOpen={setOpen} alertSlideCallback={slideAlertCallback} title={alertTitle}
                               description={alertDescription} yesOptionTitle={yesOptionTitle} noOptionTitle={noOptionTitle}/>
-            <Stepper activeStep={activeStep} orientation={"horizontal"}>
+            <ThemeProvider theme={theme}>
+            <Stepper activeStep={activeStep} nonLinear orientation={"horizontal"}>
                 {steps.map((label, index) => {
                     const stepProps = {};
                     const labelProps = {};
@@ -232,6 +246,7 @@ const HorizontalLinearStepper = (props) => {
                             </div>
                         </Typography>
 
+
                         <Button color="primary" onClick={ ()=> registerComponent.register()} className={classes.button}>
                             Register
                         </Button>
@@ -258,6 +273,7 @@ const HorizontalLinearStepper = (props) => {
                     </div>
                 )}
             </div>
+            </ThemeProvider>
         </div>
     );
 }

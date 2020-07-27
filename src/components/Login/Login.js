@@ -6,6 +6,20 @@ import './Login.css';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import {Link, Redirect} from "react-router-dom";
+import {createMuiTheme} from '@material-ui/core/styles';
+import {ThemeProvider} from "@material-ui/styles";
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: "#132C3C",
+        },
+        secondary: {
+            main: "#132C3C",
+        },
+    },
+});
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -34,16 +48,16 @@ const LoginForm = (props) => {
     const classes = useStyles();
 
 
-    return <form className={classes.form} noValidate autoComplete="off">
+    return <ThemeProvider theme={theme}><form className={classes.form} noValidate autoComplete="off">
         <TextField id="email" label="Email" onChange={props.onChangeEmail} variant="outlined"/>
         <TextField id="password" label="Password" onChange={props.onChangePass} type="password" variant="outlined"/>
-        <Button onClick={props.loginClicked} variant="contained" color="primary">
+        <Button onClick={props.loginClicked} variant="contained" id="loginButton" >
             Login
         </Button>
-        <Button to="/register" component={Link} variant="contained" color="primary">
+        <Button to="/register" component={Link} variant="contained" id="loginButton">
             Register
         </Button>
-    </form>;
+    </form></ThemeProvider>;
 }
 
 

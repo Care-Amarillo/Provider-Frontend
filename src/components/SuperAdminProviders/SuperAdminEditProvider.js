@@ -12,6 +12,19 @@ import AlertDialogSlide from "../AlertDialogSlide";
 import {ToastContainer} from "react-toastr";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
+import {createMuiTheme} from '@material-ui/core/styles';
+import {ThemeProvider} from "@material-ui/styles";
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: "#132C3C",
+        },
+        secondary: {
+            main: "#132C3C",
+        },
+    },
+});
 
 
 const useStyles = makeStyles((theme) => ({
@@ -20,6 +33,15 @@ const useStyles = makeStyles((theme) => ({
     },
     button: {
         marginRight: theme.spacing(1),
+        backgroundColor: "#132C3C",
+        color: "white",
+        '&:disabled': {
+            backgroundColor: "lightgrey"
+        },
+        '&:hover': {
+            backgroundColor: "#132C3C",
+            color: '#FFFFFF'
+        }
     },
     instructions: {
         marginTop: theme.spacing(1),
@@ -67,16 +89,18 @@ const FormOne = (props) => {
             phone: e.target.value,
         });
     };
-    return <form className={classes.form} noValidate autoComplete="off">
-        <TextField id="name" label="Name" onChange={onChangeName} value={registerComponent.state.name}
-                   variant="outlined"/>
-        <TextField id="title" label="Title" value={registerComponent.state.title} onChange={onChangeTitle}
-                   variant="outlined"/>
-        <TextField id="phone" label="Phone Number" onChange={onChangePhone} value={registerComponent.state.phone}
-                   type="number" variant="outlined"/>
-        <TextField id="email" label="Email" onChange={onChangeEmail} value={registerComponent.state.email}
-                   variant="outlined"/>
-    </form>;
+    return <ThemeProvider theme={theme}>
+        <form className={classes.form} noValidate autoComplete="off">
+            <TextField id="name" label="Name" onChange={onChangeName} value={registerComponent.state.name}
+                       variant="outlined"/>
+            <TextField id="title" label="Title" value={registerComponent.state.title} onChange={onChangeTitle}
+                       variant="outlined"/>
+            <TextField id="phone" label="Phone Number" onChange={onChangePhone} value={registerComponent.state.phone}
+                       type="number" variant="outlined"/>
+            <TextField id="email" label="Email" onChange={onChangeEmail} value={registerComponent.state.email}
+                       variant="outlined"/>
+        </form>
+    </ThemeProvider>;
 }
 
 const FormTwo = (props) => {
@@ -108,16 +132,18 @@ const FormTwo = (props) => {
             zip: e.target.value,
         });
     };
-    return <form className={classes.form} noValidate autoComplete="off">
-        {/*<TextField id="latitude" label="Latitude" onChange={onChangeLatitude} value={registerComponent.state.lat}*/}
-        {/*           variant="outlined"/>*/}
-        {/*<TextField id="longitude" label="Longitude" onChange={onChangeLongitude} value={registerComponent.state.long}*/}
-        {/*           variant="outlined"/>*/}
-        <TextField id="address" label="Address" onChange={onChangeAddress} value={registerComponent.state.address}
-                   variant="outlined"/>
-        <TextField id="zip" label="Zip" onChange={onChangeZip} value={registerComponent.state.zip}
-                   variant="outlined"/>
-    </form>;
+    return <ThemeProvider theme={theme}>
+        <form className={classes.form} noValidate autoComplete="off">
+            {/*<TextField id="latitude" label="Latitude" onChange={onChangeLatitude} value={registerComponent.state.lat}*/}
+            {/*           variant="outlined"/>*/}
+            {/*<TextField id="longitude" label="Longitude" onChange={onChangeLongitude} value={registerComponent.state.long}*/}
+            {/*           variant="outlined"/>*/}
+            <TextField id="address" label="Address" onChange={onChangeAddress} value={registerComponent.state.address}
+                       variant="outlined"/>
+            <TextField id="zip" label="Zip" onChange={onChangeZip} value={registerComponent.state.zip}
+                       variant="outlined"/>
+        </form>
+    </ThemeProvider>;
 }
 
 
@@ -137,12 +163,15 @@ const FormThree = (props) => {
             bedsUsed: e.target.value,
         });
     };
-    return <form className={classes.form} noValidate autoComplete="off">
-        <TextField id="totalBeds" label="Total Beds" onChange={onChangeTotalBeds}
-                   value={registerComponent.state.totalBeds} variant="outlined"/>
-        <TextField id="bedsUsed" label="Used Beds" onChange={onChangeUsedBeds} value={registerComponent.state.bedsUsed}
-                   variant="outlined"/>
-    </form>;
+    return <ThemeProvider theme={theme}>
+        <form className={classes.form} noValidate autoComplete="off">
+            <TextField id="totalBeds" label="Total Beds" onChange={onChangeTotalBeds}
+                       value={registerComponent.state.totalBeds} variant="outlined"/>
+            <TextField id="bedsUsed" label="Used Beds" onChange={onChangeUsedBeds}
+                       value={registerComponent.state.bedsUsed}
+                       variant="outlined"/>
+        </form>
+    </ThemeProvider>;
 }
 
 
@@ -151,26 +180,27 @@ const FormFour = (props) => {
     const registerComponent = props.registerComponent;
 
 
-
     const handleActiveChange = (e) => {
         console.log("active" + e.target.checked);
         registerComponent.setState({
             active: e.target.checked,
         });
     };
-    return <form className={classes.form} noValidate autoComplete="off">
-        <FormControlLabel
-            control={
-                <Switch
-                    checked={registerComponent.state.active}
-                    onChange={handleActiveChange}
-                    name="active"
-                    color="primary"
-                />
-            }
-            label="Active"
-        />
-    </form>;
+    return <ThemeProvider theme={theme}>
+        <form className={classes.form} noValidate autoComplete="off">
+            <FormControlLabel
+                control={
+                    <Switch
+                        checked={registerComponent.state.active}
+                        onChange={handleActiveChange}
+                        name="active"
+                        color="primary"
+                    />
+                }
+                label="Active"
+            />
+        </form>
+    </ThemeProvider>;
 }
 
 const getStepContent = (step, registerComponent) => {
@@ -277,41 +307,45 @@ const HorizontalLinearStepper = (props) => {
             <AlertDialogSlide open={open} setOpen={setOpen} alertSlideCallback={slideAlertCallback} title={alertTitle}
                               description={alertDescription} yesOptionTitle={yesOptionTitle}
                               noOptionTitle={noOptionTitle}/>
-            <Stepper activeStep={activeStep} orientation={"horizontal"}>
-                {steps.map((label, index) => {
-                    const stepProps = {};
-                    const labelProps = {};
-                    if (isStepOptional(index)) {
-                        labelProps.optional = <Typography variant="caption">Optional</Typography>;
-                    }
-                    if (isStepSkipped(index)) {
-                        stepProps.completed = false;
-                    }
-                    return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
-                        </Step>
-                    );
-                })}
-            </Stepper>
+            <ThemeProvider theme={theme}>
+                <Stepper activeStep={activeStep} nonLinear orientation={"horizontal"}>
+                    {steps.map((label, index) => {
+                        const stepProps = {};
+                        const labelProps = {};
+                        if (isStepOptional(index)) {
+                            labelProps.optional = <Typography variant="caption">Optional</Typography>;
+                        }
+                        if (isStepSkipped(index)) {
+                            stepProps.completed = false;
+                        }
+                        return (
+                            <Step key={label} {...stepProps}>
+                                <StepLabel {...labelProps}>{label}</StepLabel>
+                            </Step>
+                        );
+                    })}
+                </Stepper>
+            </ThemeProvider>
             <div>
                 <div>
                     <Typography
                         className={classes.instructions}>{getStepContent(activeStep, registerComponent)}</Typography>
                     <div>
-                        <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
-                            Back
-                        </Button>
+                        <ThemeProvider theme={theme}>
+                            <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
+                                Back
+                            </Button>
 
 
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={activeStep === steps.length - 1 ? askForConfirmation : handleNext}
-                            className={classes.button}
-                        >
-                            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                        </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={activeStep === steps.length - 1 ? askForConfirmation : handleNext}
+                                className={classes.button}
+                            >
+                                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                            </Button>
+                        </ThemeProvider>
                     </div>
                 </div>
                 {/*// )}*/}

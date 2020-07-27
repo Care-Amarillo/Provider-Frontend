@@ -23,6 +23,11 @@
   color: white;
 }
 
+
+body{
+  background-color: lightgray;
+}
+
 .App-link {
   color: #61dafb;
 }

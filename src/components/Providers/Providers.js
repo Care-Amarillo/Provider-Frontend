@@ -18,7 +18,8 @@ const useStyles = makeStyles({
         flexDirection:"column",
         // justifyContent:"center",
         margin:"10px",
-        width: "60%"
+        width: "60%",
+        // backgroundColor: "#132C3C",
     },
     bullet: {
         display: 'inline-block',
@@ -27,11 +28,14 @@ const useStyles = makeStyles({
     },
     title: {
         fontSize: 17,
-        textAlign:"start",
-        fontWeight: "bold"
+        textAlign:"center",
+        fontWeight: "bold",
+        // color:"white"
     },
     secondText: {
-        textAlign:"start"
+        textAlign:"center",
+        // color:"white"
+
     },
     sound: {
         width:"100%"
@@ -39,6 +43,14 @@ const useStyles = makeStyles({
     pos: {
         marginBottom: 12,
     },
+    button:{
+        backgroundColor:"#132C3C",
+        color:"white",
+        '&:hover': {
+            backgroundColor: "lightgrey",
+            color: '#000000'
+        }
+    }
 });
 
 
@@ -61,13 +73,8 @@ const ProviderCard = (props) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" color="primary">
-                    <Link className="barLink"   to={{
-                        pathname:`/providerDtl/${data._id}`,
-                        state: {
-                            data:data
-                        }
-                    }}>Learn More</Link>
+                <Button  className={classes.button} component={Link} to={`/providerDtl/${data._id}`}>
+                    Learn More
                 </Button>
             </CardActions>
         </Card>

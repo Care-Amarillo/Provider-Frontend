@@ -3,7 +3,7 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: blue;
+    background-color: lightgrey;
 }
 
 
@@ -17,6 +17,10 @@
 #dtlLink{
     color:white;
     text-decoration: none;
+}
+
+#dtlLink:hover{
+    color:black;
 }
 
 

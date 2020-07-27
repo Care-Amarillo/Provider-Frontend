@@ -12,6 +12,21 @@ import {Redirect} from "react-router-dom";
 import axios from "axios";
 import AlertDialogSlide from "../AlertDialogSlide";
 import {ToastContainer} from "react-toastr";
+import {createMuiTheme} from '@material-ui/core/styles';
+import {ThemeProvider} from "@material-ui/styles";
+import {Steps} from "intro.js-react";
+import StepButton from "@material-ui/core/StepButton";
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: "#132C3C",
+        },
+        secondary: {
+            main: "#132C3C",
+        },
+    },
+});
 
 
 const useStyles = makeStyles((theme) => ({
@@ -20,6 +35,15 @@ const useStyles = makeStyles((theme) => ({
     },
     button: {
         marginRight: theme.spacing(1),
+        backgroundColor: "#132C3C",
+        color: "white",
+        '&:disabled': {
+            backgroundColor: "lightgrey"
+        },
+        '&:hover': {
+            backgroundColor: "#132C3C",
+            color: '#FFFFFF'
+        }
     },
     instructions: {
         marginTop: theme.spacing(1),
@@ -67,15 +91,18 @@ const FormOne = (props) => {
             phone: e.target.value,
         });
     };
-    return <form className={classes.form} noValidate autoComplete="off">
-        <TextField id="name" label="Name" onChange={onChangeName} value={registerComponent.state.name}
-                   variant="outlined"/>
-        <TextField id="title" label="Title" value={registerComponent.state.title} onChange={onChangeTitle} variant="outlined"/>
-        <TextField id="phone" label="Phone Number" onChange={onChangePhone} value={registerComponent.state.phone}
-                   type="number" variant="outlined"/>
-        <TextField id="email" label="Email" onChange={onChangeEmail} value={registerComponent.state.email}
-                   variant="outlined"/>
-    </form>;
+    return <ThemeProvider theme={theme}>
+        <form className={classes.form} noValidate autoComplete="off">
+            <TextField id="name" label="Name" onChange={onChangeName} value={registerComponent.state.name}
+                       variant="outlined"/>
+            <TextField id="title" label="Title" value={registerComponent.state.title} onChange={onChangeTitle}
+                       variant="outlined"/>
+            <TextField id="phone" label="Phone Number" onChange={onChangePhone} value={registerComponent.state.phone}
+                       type="number" variant="outlined"/>
+            <TextField id="email" label="Email" onChange={onChangeEmail} value={registerComponent.state.email}
+                       variant="outlined"/>
+        </form>
+    </ThemeProvider>;
 }
 
 const FormTwo = (props) => {
@@ -107,16 +134,18 @@ const FormTwo = (props) => {
             zip: e.target.value,
         });
     };
-    return <form className={classes.form} noValidate autoComplete="off">
-        {/*<TextField id="latitude" label="Latitude" onChange={onChangeLatitude} value={registerComponent.state.lat}*/}
-        {/*           variant="outlined"/>*/}
-        {/*<TextField id="longitude" label="Longitude" onChange={onChangeLongitude} value={registerComponent.state.long}*/}
-        {/*           variant="outlined"/>*/}
-        <TextField id="address" label="Address" onChange={onChangeAddress} value={registerComponent.state.address}
-                   variant="outlined"/>
-        <TextField id="zip" label="Zip" onChange={onChangeZip} value={registerComponent.state.zip}
-                   variant="outlined"/>
-    </form>;
+    return <ThemeProvider theme={theme}>
+        <form className={classes.form} noValidate autoComplete="off">
+            {/*<TextField id="latitude" label="Latitude" onChange={onChangeLatitude} value={registerComponent.state.lat}*/}
+            {/*           variant="outlined"/>*/}
+            {/*<TextField id="longitude" label="Longitude" onChange={onChangeLongitude} value={registerComponent.state.long}*/}
+            {/*           variant="outlined"/>*/}
+            <TextField id="address" label="Address" onChange={onChangeAddress} value={registerComponent.state.address}
+                       variant="outlined"/>
+            <TextField id="zip" label="Zip" onChange={onChangeZip} value={registerComponent.state.zip}
+                       variant="outlined"/>
+        </form>
+    </ThemeProvider>;
 }
 
 
@@ -136,12 +165,15 @@ const FormThree = (props) => {
             bedsUsed: e.target.value,
         });
     };
-    return <form className={classes.form} noValidate autoComplete="off">
-        <TextField id="totalBeds" label="Total Beds" onChange={onChangeTotalBeds}
-                   value={registerComponent.state.totalBeds} variant="outlined"/>
-        <TextField id="bedsUsed" label="Used Beds" onChange={onChangeUsedBeds} value={registerComponent.state.bedsUsed}
-                   variant="outlined"/>
-    </form>;
+    return <ThemeProvider theme={theme}>
+        <form className={classes.form} noValidate autoComplete="off">
+            <TextField id="totalBeds" label="Total Beds" onChange={onChangeTotalBeds}
+                       value={registerComponent.state.totalBeds} variant="outlined"/>
+            <TextField id="bedsUsed" label="Used Beds" onChange={onChangeUsedBeds}
+                       value={registerComponent.state.bedsUsed}
+                       variant="outlined"/>
+        </form>
+    </ThemeProvider>;
 }
 
 const getStepContent = (step, registerComponent) => {
@@ -240,28 +272,37 @@ const HorizontalLinearStepper = (props) => {
     const handleReset = () => {
         setActiveStep(0);
     };
+    const handleStep = (step) => () => {
+        setActiveStep(step);
+    };
 
     return (
         <div className={classes.root}>
             <AlertDialogSlide open={open} setOpen={setOpen} alertSlideCallback={slideAlertCallback} title={alertTitle}
-                              description={alertDescription} yesOptionTitle={yesOptionTitle} noOptionTitle={noOptionTitle}/>
-            <Stepper activeStep={activeStep} orientation={"horizontal"}>
-                {steps.map((label, index) => {
-                    const stepProps = {};
-                    const labelProps = {};
-                    if (isStepOptional(index)) {
-                        labelProps.optional = <Typography variant="caption">Optional</Typography>;
-                    }
-                    if (isStepSkipped(index)) {
-                        stepProps.completed = false;
-                    }
-                    return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
-                        </Step>
-                    );
-                })}
-            </Stepper>
+                              description={alertDescription} yesOptionTitle={yesOptionTitle}
+                              noOptionTitle={noOptionTitle}/>
+            <ThemeProvider theme={theme}>
+                <Stepper activeStep={activeStep} nonLinear orientation={"horizontal"}>
+                    {steps.map((label, index) => {
+                        const stepProps = {};
+                        const labelProps = {};
+                        if (isStepOptional(index)) {
+                            labelProps.optional = <Typography variant="caption">Optional</Typography>;
+                        }
+                        if (isStepSkipped(index)) {
+                            stepProps.completed = false;
+                        }
+                        return (
+                            <Step key={label} {...stepProps}>
+                                {/*<StepLabel {...labelProps}>{label}</StepLabel>*/}
+                                <StepButton onClick={handleStep(index)} >
+                                    {label}
+                                </StepButton>
+                            </Step>
+                        );
+                    })}
+                </Stepper>
+            </ThemeProvider>
             <div>
                 <div>
                     <Typography
@@ -288,6 +329,21 @@ const HorizontalLinearStepper = (props) => {
     );
 }
 
+const TutorialButton = (props) => {
+    const handleClick = () => {
+        console.log("handleClick");
+        props.toggleSteps();
+    }
+
+    return <Button variant="contained"
+                   id="tutorialButton"
+                   color="primary"
+                   onClick={handleClick}
+    >
+        Help
+    </Button>;
+}
+
 
 class EditProvider extends Component {
     constructor(props) {
@@ -308,6 +364,34 @@ class EditProvider extends Component {
             createProvider: false,
             active: false,
             isCreated: false,
+            stepsEnabled: false,
+            initialStep: 0,
+            steps: [
+                {
+                    element: "#placesAuto",
+                    intro: "Search for your entity here. It will fill in most of the information for you!"
+                },
+                {
+                    element: "#backButton",
+                    intro: "Use this to go back between info"
+                },
+                {
+                    element: "#nextButton",
+                    intro: "Use this button to move forward with the info"
+                },
+                {
+                    element: "#tutorialButton",
+                    intro: "Use this button to view this tutorial again"
+                },
+            ],
+            hintsEnabled: true,
+            hints: [
+                {
+                    element: ".hello",
+                    hint: "Hello hint",
+                    hintPosition: "middle-right"
+                }
+            ]
         }
     }
 
@@ -393,7 +477,6 @@ class EditProvider extends Component {
         // let URL = "http://localhost:3000/users/authenticate";
 
 
-
         console.log("state " + JSON.stringify(this.state));
 
         const config = {
@@ -413,8 +496,8 @@ class EditProvider extends Component {
                 zip: this.state.zip,
                 lat: this.state.lat.toString(),
                 long: this.state.long.toString(),
-                type:1,
-                active:this.state.active,
+                type: 1,
+                active: this.state.active,
                 totalBeds: parseInt(this.state.totalBeds),
                 bedsUsed: parseInt(this.state.bedsUsed),
             },
@@ -441,15 +524,22 @@ class EditProvider extends Component {
     }
 
 
-
-
     componentDidMount() {
         this.loadData();
     }
 
+    toggleSteps = () => {
+        this.setState(prevState => ({stepsEnabled: !prevState.stepsEnabled}));
+    };
+
+
+    onExit = () => {
+        this.setState(() => ({stepsEnabled: false}));
+    };
+
     loadData = async () => {
 
-        let URL = "https://careamabrain.cmcoffee91.dev/managingUsers/user/" + this.props.user._id ;
+        let URL = "https://careamabrain.cmcoffee91.dev/managingUsers/user/" + this.props.user._id;
 
         const config = {
             "Authorization": `Bearer ${this.props.token}`
@@ -458,13 +548,13 @@ class EditProvider extends Component {
         const response = await axios({
             method: 'get',
             url: URL,
-            headers:config
+            headers: config
         });
 
         const data = await response.data;
         console.log("data " + JSON.stringify(data));
         console.log("data length:" + data.length);
-        if(data.length > 0){
+        if (data.length > 0) {
             let provider = data[0].provider;
             console.log("provider title is " + provider.title);
             this.setState({
@@ -493,8 +583,15 @@ class EditProvider extends Component {
                 ref={ref => this.container = ref}
                 className="toast-bottom-right"
             />
+            <Steps
+                enabled={this.state.stepsEnabled}
+                steps={this.state.steps}
+                initialStep={this.state.initialStep}
+                onExit={this.onExit}
+            />
             <HorizontalLinearStepper registerComponent={this}/>
             <AutoCompleteInput onChange={this.gotPlace}/>
+            <TutorialButton toggleSteps={this.toggleSteps}/>
         </div>;
     }
 }

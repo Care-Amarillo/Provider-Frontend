@@ -5,7 +5,19 @@ import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
 import './ProviderPanel.css';
 import {Link} from "react-router-dom";
+import {createMuiTheme} from '@material-ui/core/styles';
+import {ThemeProvider} from "@material-ui/styles";
 
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: "#132C3C",
+        },
+        secondary: {
+            main: "#132C3C",
+        },
+    },
+});
 
 class ProviderPanel extends Component {
 
@@ -66,7 +78,7 @@ class ProviderPanel extends Component {
     render() {
         console.log("token is " + this.props.token);
         console.log("user is " + JSON.stringify(this.props.user));
-        let providerButton = <Button variant="contained" color="primary" to="/providerSignup" component={Link}>
+        let providerButton = <Button variant="contained" id="providerButton" to="/providerSignup" component={Link}>
             Add New Provider
         </Button> ;
         if(this.props.user && this.props.user.admin){
@@ -75,9 +87,11 @@ class ProviderPanel extends Component {
         return (
             <div id="providerContainer">
                 <div id="actionContainer">
+                    <ThemeProvider theme={theme}>
+                    <TextField id="search" label="Search" onChange={this.searchChanged}  variant="outlined"/>
+                    </ThemeProvider>
                     {providerButton}
 
-                    <TextField id="search" label="Search" onChange={this.searchChanged}  variant="outlined"/>
 
                 </div>
 

@@ -1,6 +1,7 @@
 #providerContainer{
     display: flex;
     flex-direction: column;
+    background-color: lightgray;
 }
 
 #actionContainer{
@@ -23,3 +24,23 @@
     display: none;
 }
 
+#providerButton{
+    background-color: #132C3C;
+    color: white;
+}
+
+
+@media only screen and (max-width: 600px) {
+    #actionContainer{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 8px;
+        width: 100%;
+    }
+
+    #actionContainer > Button{
+        margin-bottom: 8px;
+        color:white;
+    }
+}

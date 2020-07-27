@@ -8,9 +8,14 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Home from "@material-ui/icons/Home";
 import ListItemText from "@material-ui/core/ListItemText";
 import {makeStyles} from "@material-ui/core/styles";
+import Button from '@material-ui/core/Button';
+import EditIcon from '@material-ui/icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
+import TableChartIcon from '@material-ui/icons/TableChart';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -35,6 +40,15 @@ const useStyles = makeStyles(theme => ({
         }
     },
     toolbar: theme.mixins.toolbar,
+    logo:{
+        width:"70px",
+        height:"50px",
+        margin: "auto",
+        [theme.breakpoints.down('md')]: {
+            width:"50px",
+            height:"30px",
+        },
+    },
     drawerPaper: {
         width: drawerWidth
     },
@@ -45,11 +59,12 @@ const useStyles = makeStyles(theme => ({
 
 const LoginListItem = (props) => {
     return <ListItem key="login" onClick={()=>props.handleClick()} component={Link} to={"/login"}>
-        <ListItemIcon>
-            <AccountCircleIcon/>
+        {/*<ListItemIcon>*/}
+        {/*    <AccountCircleIcon/>*/}
 
-        </ListItemIcon>
-        <ListItemText primary="Login"/>
+        {/*</ListItemIcon>*/}
+        <Button startIcon={<AccountCircleIcon/>}>Login</Button>
+        {/*<ListItemText primary="Login"/>*/}
     </ListItem>;
 }
 
@@ -66,11 +81,12 @@ const RegisterListItem = (props) => {
 
 const AuditListItem = (props) => {
     return <ListItem key="audit" onClick={()=>props.handleClick()} component={Link} to={"/audit"}>
-        <ListItemIcon>
-            <AccountCircleIcon/>
+        {/*<ListItemIcon>*/}
+        {/*    <AccountCircleIcon/>*/}
 
-        </ListItemIcon>
-        <ListItemText primary="Audit"/>
+        {/*</ListItemIcon>*/}
+        {/*/!*<ListItemText primary="Audit"/>*!/*/}
+        <Button startIcon={<TableChartIcon/>}>Audit Entries</Button>
     </ListItem>;
 }
 
@@ -79,11 +95,12 @@ const ProviderListItem = (props) => {
 
 
     return <ListItem key="provider"  onClick={()=>props.handleClick()} component={Link} to={"/provider"}>
-        <ListItemIcon>
-            <Home/>
+        {/*<ListItemIcon>*/}
+        {/*    /!*<Home/>*!/*/}
 
-        </ListItemIcon>
-        <ListItemText primary="Provider"/>
+        {/*</ListItemIcon>*/}
+        {/*<ListItemText primary="Provider"/>*/}
+        <Button startIcon={<Home/>}>Providers</Button>
     </ListItem>;
 }
 
@@ -91,32 +108,34 @@ const ProviderListItem = (props) => {
 const ProviderEntryListItem = (props) => {
 
     return <ListItem key="providerEntries" onClick={()=>props.handleClick()} component={Link} to={"/providerEntry"}>
-        <ListItemIcon>
-            <AccountCircleIcon/>
-
-        </ListItemIcon>
-        <ListItemText primary="Provider Entries"/>
+        {/*<ListItemIcon>*/}
+        {/*    <AccountCircleIcon/>*/}
+        {/*</ListItemIcon>*/}
+        {/*<ListItemText primary="Provider Entries"/>*/}
+        <Button startIcon={<TableChartIcon/>}>Provider Entries</Button>
     </ListItem>;
 }
 
 const ProviderSignUpListItem = (props) => {
     return <ListItem key="providerSignUp" onClick={()=>props.handleClick()} component={Link} to={"/providerSignUp"}>
-        <ListItemIcon>
-            <AccountCircleIcon/>
+        {/*<ListItemIcon>*/}
+        {/*    <AccountCircleIcon/>*/}
 
-        </ListItemIcon>
-        <ListItemText primary="Create Provider"/>
+        {/*</ListItemIcon>*/}
+        {/*<ListItemText primary="Create Provider"/>*/}
+        <Button startIcon={<AddIcon/>}>Create Provider</Button>
     </ListItem>;
 }
 
 
 const EditProviderListItem = (props) => {
     return <ListItem key="editProvider" onClick={()=>props.handleClick()} component={Link} to={"/editProvider"}>
-        <ListItemIcon>
-            <AccountCircleIcon/>
+        {/*<ListItemIcon>*/}
+        {/*    <AccountCircleIcon/>*/}
 
-        </ListItemIcon>
-        <ListItemText primary="Edit Provider"/>
+        {/*</ListItemIcon>*/}
+        {/*<ListItemText primary="Manage Provider"/>*/}
+        <Button startIcon={<EditIcon/>}>Manage Provider</Button>
     </ListItem>;
 }
 
@@ -125,22 +144,24 @@ const EditProviderListItem = (props) => {
 const UserListItem = (props) => {
 
     return <ListItem key="Profile" onClick={()=>props.handleClick()} component={Link} to={"/editUser"}>
-        <ListItemIcon>
-            <AccountCircleIcon/>
+        {/*<ListItemIcon>*/}
+        {/*    <AccountCircleIcon/>*/}
 
-        </ListItemIcon>
-        <ListItemText primary="Profile"/>
+        {/*</ListItemIcon>*/}
+        {/*<ListItemText primary="Profile"/>*/}
+        <Button startIcon={<AccountCircleIcon/>}>Profile</Button>
     </ListItem>;
 }
 
 const SuperAdminProvidersListItem = (props) => {
 
     return <ListItem key="superAdminProviders" onClick={()=>props.handleClick()} component={Link} to={"/superAdminProviders"}>
-        <ListItemIcon>
-            <AccountCircleIcon/>
+        {/*<ListItemIcon>*/}
+        {/*    <AccountCircleIcon/>*/}
 
-        </ListItemIcon>
-        <ListItemText primary="Manage Providers"/>
+        {/*</ListItemIcon>*/}
+        {/*<ListItemText primary="Manage Providers"/>*/}
+        <Button startIcon={<EditIcon/>}>Manage Providers</Button>
     </ListItem>;
 }
 
@@ -153,11 +174,11 @@ const LogOutListItem = (props) => {
         props.handleClick();
     }
     return <ListItem key="logOut" onClick={()=>handleClick()}>
-        <ListItemIcon>
-            <AccountCircleIcon/>
-
-        </ListItemIcon>
-        <ListItemText primary="Log Out"/>
+        {/*<ListItemIcon>*/}
+        {/*    <AccountCircleIcon/>*/}
+        {/*</ListItemIcon>*/}
+        {/*<ListItemText primary="Log Out"/>*/}
+        <Button startIcon={<ExitToAppIcon/>}>Log Out</Button>
     </ListItem>;
 }
 
@@ -190,6 +211,7 @@ const CareAppDrawer = (props) => {
     //user will only have provider if they are an admin
     if (props.token && props.user && props.user.admin) {
         listOfListItems.push(<EditProviderListItem handleClick={handleClick}/>);
+        listOfListItems.push(<ProviderEntryListItem handleClick={handleClick}/>);
     }
 
     if (props.token && props.user && props.user.superAdmin) {
@@ -198,7 +220,6 @@ const CareAppDrawer = (props) => {
     }
 
     if (props.token) {
-        listOfListItems.push(<ProviderEntryListItem handleClick={handleClick}/>);
         listOfListItems.push(<UserListItem handleClick={handleClick}/>);
         listOfListItems.push(<LogOutListItem handleClick={handleClick} drawerProps={props}/>);
     } else {
@@ -212,6 +233,8 @@ const CareAppDrawer = (props) => {
     return (
         <div>
             <div className={classes.toolbar}/>
+            {/*<img className={classes.logo}  src={'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRiGh1xwMqN286EqsRuHP0xoy6e6IEsIN_T_g&usqp=CAU'} alt="cityOfAmarillo" />*/}
+
             <Divider/>
             <List>
                 {
