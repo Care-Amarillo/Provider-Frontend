@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background-color: lightgray;
+    height: 100vh;
 }
 
 .App-logo {
@@ -23,6 +25,9 @@
   color: white;
 }
 
+#providerEntryContainer{
+  background-color: lightgray;
+}
 
 body{
   background-color: lightgray;

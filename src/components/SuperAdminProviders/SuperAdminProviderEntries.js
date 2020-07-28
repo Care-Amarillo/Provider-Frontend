@@ -76,8 +76,15 @@ const ProviderTable = (props) => {
         <MaterialTable
             icons={tableIcons}
             columns={[
+                {
+                    title: 'Provider',
+                    field: 'name',
+                    render: rowData  => rowData.provider['name'],
+                    customFilterAndSearch: (term, rowData) => (rowData.provider['name']).indexOf(term) != -1
+                },
                 {title: "Amount Changed", field: "amountChanged"},
                 {title: "Date", field: "createdAt", type: "datetime", searchable: false},
+
             ]}
             data={props.data}
             title="Provider Entry"
@@ -94,7 +101,7 @@ const ProviderTable = (props) => {
     </div>;
 }
 
-class ProviderEntries extends Component {
+class SuperAdminProviderEntries extends Component {
     constructor(props) {
         super(props);
         let midNight = new Date();
@@ -170,7 +177,7 @@ class ProviderEntries extends Component {
         console.log("sstart date:" + this.state.selectedStartDate.toISOString());
         console.log("end date:" + this.state.selectedEndDate.toISOString());
 
-        let URL = "https://careamabrain.cmcoffee91.dev/providerEntriesByDate/" + this.state.providerId + "?startDate=" + this.state.selectedStartDate.toISOString() + "&endDate=" + this.state.selectedEndDate.toISOString();
+        let URL = "https://careamabrain.cmcoffee91.dev/providerEntries?startDate=" + this.state.selectedStartDate.toISOString() + "&endDate=" + this.state.selectedEndDate.toISOString();
 
         this.setState({
             entries: []
@@ -519,4 +526,4 @@ class ProviderEntries extends Component {
     }
 }
 
-export default ProviderEntries;
+export default SuperAdminProviderEntries;

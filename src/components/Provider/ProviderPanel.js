@@ -81,7 +81,7 @@ class ProviderPanel extends Component {
         let providerButton = <Button variant="contained" id="providerButton" to="/providerSignup" component={Link}>
             Add New Provider
         </Button> ;
-        if(this.props.user && this.props.user.admin){
+        if(this.props.user && (this.props.user.admin  || this.props.user.superAdmin)){
             providerButton = <div id="noneElement"></div>;
         }
         return (

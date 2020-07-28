@@ -18,6 +18,7 @@ import EditUser from "../../containers/EditUser";
 import SuperProtectedRoute from "../../containers/SuperProtectedRoute";
 import SuperAdminProviders from "../../containers/SuperAdminProviders";
 import SuperAdminEditProvider from "../../containers/SuperAdminEditProvider";
+import SuperAdminProviderEntries from "../../containers/SuperAdminProviderEntries";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -42,10 +43,11 @@ function ResponsiveDrawer(props) {
                         <div className={classes.toolbar} />
                         <Switch>
                             <Route exact path="/" component={ProviderPanel} />
-                            <ProtectedRoute exact path="/providerSignUp" component={ProviderRegister} />
                             <SuperProtectedRoute exact path="/audit" component={AuditEntries} />
                             <SuperProtectedRoute exact path="/superAdminProviders" component={SuperAdminProviders} />
+                            <SuperProtectedRoute exact path="/superAdminProviderEntry" component={SuperAdminProviderEntries} />
                             <SuperProtectedRoute exact path="/superAdminEditProvider/:id" component={SuperAdminEditProvider} />
+                            <ProtectedRoute exact path="/providerSignUp" component={ProviderRegister} />
                             <ProtectedRoute exact path="/providerEntry" component={ProviderEntries} />
                             <ProtectedRoute exact path="/editProvider" component={EditProvider} />
                             <ProtectedRoute exact path="/editUser" component={EditUser} />

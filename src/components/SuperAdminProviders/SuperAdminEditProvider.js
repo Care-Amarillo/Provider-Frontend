@@ -14,6 +14,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import {createMuiTheme} from '@material-ui/core/styles';
 import {ThemeProvider} from "@material-ui/styles";
+import StepButton from "@material-ui/core/StepButton";
 
 const theme = createMuiTheme({
     palette: {
@@ -301,6 +302,9 @@ const HorizontalLinearStepper = (props) => {
     const handleReset = () => {
         setActiveStep(0);
     };
+    const handleStep = (step) => () => {
+        setActiveStep(step);
+    };
 
     return (
         <div className={classes.root}>
@@ -320,7 +324,10 @@ const HorizontalLinearStepper = (props) => {
                         }
                         return (
                             <Step key={label} {...stepProps}>
-                                <StepLabel {...labelProps}>{label}</StepLabel>
+                                {/*<StepLabel {...labelProps}>{label}</StepLabel>*/}
+                                <StepButton onClick={handleStep(index)} >
+                                    {label}
+                                </StepButton>
                             </Step>
                         );
                     })}

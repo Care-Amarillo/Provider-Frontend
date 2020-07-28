@@ -116,6 +116,17 @@ const ProviderEntryListItem = (props) => {
     </ListItem>;
 }
 
+const SuperAdminProviderEntryListItem = (props) => {
+
+    return <ListItem key="superAdminProviderEntries" onClick={()=>props.handleClick()} component={Link} to={"/superAdminProviderEntry"}>
+        {/*<ListItemIcon>*/}
+        {/*    <AccountCircleIcon/>*/}
+        {/*</ListItemIcon>*/}
+        {/*<ListItemText primary="Provider Entries"/>*/}
+        <Button startIcon={<TableChartIcon/>}>Provider Entries</Button>
+    </ListItem>;
+}
+
 const ProviderSignUpListItem = (props) => {
     return <ListItem key="providerSignUp" onClick={()=>props.handleClick()} component={Link} to={"/providerSignUp"}>
         {/*<ListItemIcon>*/}
@@ -203,7 +214,7 @@ const CareAppDrawer = (props) => {
     // listOfListItems.push(<RegisterListItem/>);
 
     //if user is there and is NOT an admin, add to the list
-    if (props.token && props.user && !props.user.admin) {
+    if (props.token && props.user && !props.user.admin && !props.user.superAdmin) {
         listOfListItems.push(<ProviderSignUpListItem handleClick={handleClick}/>);
     }
 
@@ -217,6 +228,7 @@ const CareAppDrawer = (props) => {
     if (props.token && props.user && props.user.superAdmin) {
         listOfListItems.push(<AuditListItem handleClick={handleClick}/>);
         listOfListItems.push(<SuperAdminProvidersListItem handleClick={handleClick}/>);
+        listOfListItems.push(<SuperAdminProviderEntryListItem handleClick={handleClick}/>);
     }
 
     if (props.token) {
