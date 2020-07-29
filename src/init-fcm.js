@@ -19,9 +19,11 @@ if (firebase.messaging.isSupported()) {
     const initializedFirebaseApp = firebase.initializeApp(firebaseConfig);
 
     messaging = initializedFirebaseApp.messaging();
+
+    messaging.usePublicVapidKey(
+        // Project Settings => Cloud Messaging => Web Push certificates
+        "BAbQqzrfIWAgTvVnNJVrJvyEoUrh2uBtDYx2iT3cbW5JfKEHJFRn3Ruyjs4H9OsD1rjYDCQRR2UAO_46anL8Sgk"
+    );
 }
-messaging.usePublicVapidKey(
-	// Project Settings => Cloud Messaging => Web Push certificates
-  "BAbQqzrfIWAgTvVnNJVrJvyEoUrh2uBtDYx2iT3cbW5JfKEHJFRn3Ruyjs4H9OsD1rjYDCQRR2UAO_46anL8Sgk"
-);
+
 export { messaging };

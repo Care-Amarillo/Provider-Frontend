@@ -72,7 +72,8 @@ const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 
 
 const AuditTable = (props) => {
-    return  <div style={{ maxWidth: "100%" }}>
+    //todo: even with maxWidth of 100% it still stretches screen because of so many columns
+    return  <div style={{ maxWidth: "100%", width:"100%" }}>
         <MaterialTable
             icons={tableIcons}
             columns={[
@@ -80,13 +81,13 @@ const AuditTable = (props) => {
                 {
                     title: 'Created By',
                     field: 'createdBy',
-                    render: rowData  => rowData.createdBy['email'],
-                    customFilterAndSearch: (term, rowData) => (rowData.createdBy['email']).indexOf(term) != -1
+                    render: rowData  => rowData.createdBy['fName'] + " " +  rowData.createdBy['lName'],
+                    customFilterAndSearch: (term, rowData) => (rowData.createdBy['fName']).indexOf(term) != -1
                 },
                 { title: "Table Reference", field: "ref" },
                 { title: "Action", field: "action" },
-                { title: "Endpoint", field: "endpoint" },
-                { title: "Request Method", field: "requestMethod" },
+                // { title: "Endpoint", field: "endpoint" },
+                // { title: "Request Method", field: "requestMethod" },
 
             ]}
             data={props.data}
@@ -218,6 +219,17 @@ class AuditEntries extends Component {
 
     handleStartDateChange = (e) => {
         // setSelectedStartDate(e);
+        if (Object.prototype.toString.call(e) === "[object Date]") {
+            // it is a date
+            if (isNaN(e.getTime())) {  // d.valueOf() could also work
+                // date is not valid
+                return;
+            }
+            // date is valid
+        } else {
+            // not a date
+            return;
+        }
         this.setState({
                 selectedStartDate: e,
 
@@ -229,6 +241,17 @@ class AuditEntries extends Component {
 
     handleEndDateChange = (e) => {
         // setSelectedEndDate(e);
+        if (Object.prototype.toString.call(e) === "[object Date]") {
+            // it is a date
+            if (isNaN(e.getTime())) {  // d.valueOf() could also work
+                // date is not valid
+                return;
+            }
+            // date is valid
+        } else {
+            // not a date
+            return;
+        }
         this.setState({
                 selectedEndDate: e
             },

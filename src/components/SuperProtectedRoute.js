@@ -14,7 +14,7 @@ const SuperProtectedRoute = ({ component: Component, ...rest }) => {
 
 const checkAuth = (theJWT, user) => {
     if(user){
-        console.log("user super protected: " + JSON.stringify(user));
+        // console.log("user super protected: " + JSON.stringify(user));
     }
     if(theJWT != null && user && user.superAdmin) {
         return true;

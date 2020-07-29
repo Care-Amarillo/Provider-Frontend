@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './ProviderDetail.css';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -20,10 +20,10 @@ const mapApiKey = "AIzaSyCOvmLGpbzVEgMywSh3g4g6mbaynTbdIiU";
 
 const useStyles = makeStyles({
     root: {
-        display:"flex",
-        flexDirection:"column",
+        display: "flex",
+        flexDirection: "column",
         // justifyContent:"center",
-        margin:"10px",
+        margin: "10px",
         width: "60%"
     },
     bullet: {
@@ -33,21 +33,21 @@ const useStyles = makeStyles({
     },
     title: {
         fontSize: 17,
-        textAlign:"start",
+        textAlign: "start",
         fontWeight: "bold"
     },
     secondText: {
-        textAlign:"start"
+        textAlign: "start"
     },
     sound: {
-        width:"100%"
+        width: "100%"
     },
     pos: {
         marginBottom: 12,
     },
-    button:{
-        backgroundColor:"#132C3C",
-        color:"white",
+    button: {
+        backgroundColor: "#132C3C",
+        color: "white",
         '&:hover': {
             backgroundColor: "lightgrey",
             color: '#000000'
@@ -59,34 +59,31 @@ const ProviderMap = (props) => {
     const data = props.data;
 
 
-    if(!data){
-        console.log('data null providermap');
+    if (!data) {
         return <div></div>;
     }
 
     let lat = "0.0";
     let long = "0.0";
     let place_id = data.place_id;
-    if(data.long && data.lat){
+    if (data.long && data.lat) {
         lat = data.lat;
         long = data.long;
     }
 
-    if(lat === "0.0" && long === "0.0"){
+    if (lat === "0.0" && long === "0.0") {
         return <div></div>;
     }
 
     let mapSrc = `https://www.google.com/maps/embed/v1/place?q=${lat},${long}&key=${mapApiKey}`;
-    if(place_id !== ""){
+    if (place_id !== "") {
         mapSrc = `https://www.google.com/maps/embed/v1/place?q=place_id:${place_id}&key=${mapApiKey}`;
     }
 
 
+    let mapIframe = <iframe width="100%" height="450" frameborder="0"
+                            src={mapSrc} allowfullscreen></iframe>;
 
-       let mapIframe = <iframe width="100%" height="450" frameborder="0"
-                src={mapSrc} allowfullscreen></iframe>;
-
-    console.log(mapSrc);
 
     return mapIframe;
 }
@@ -97,24 +94,23 @@ const ProviderDtlCard = (props) => {
     const data = props.data;
     const title = data.title;
     const name = data.name;
-    console.log("title :" + title);
     return (
 
         <Card className={classes.root}>
             <CardContent>
-                <Typography className={classes.title} >
+                <Typography className={classes.title}>
                     {name}
                 </Typography>
-                <Typography className={classes.secondText} >
+                <Typography className={classes.secondText}>
                     {title}
                 </Typography>
             </CardContent>
             <CardActions>
                 <Button variant="contained" className={classes.button}>
-                    <Link className="barLink"   to={{
-                        pathname:"/providerDtl",
+                    <Link className="barLink" to={{
+                        pathname: "/providerDtl",
                         state: {
-                            data:data
+                            data: data
                         }
                     }}>Learn More</Link>
                 </Button>
@@ -129,15 +125,14 @@ const ProviderDtlPhoneCard = (props) => {
     const data = props.data;
     const phone = data.phone;
     const href = `tel:${phone}`;
-    console.log("phone:" + phone);
     return (
 
         <Card className={classes.root}>
             <CardContent>
-                <Typography className={classes.title} >
+                <Typography className={classes.title}>
                     Phone
                 </Typography>
-                <Typography className={classes.secondText} >
+                <Typography className={classes.secondText}>
                     {phone}
                 </Typography>
             </CardContent>
@@ -154,25 +149,53 @@ const ProviderDtlPhoneCard = (props) => {
 const ProviderDtlFavoriteCard = (props) => {
     const classes = useStyles();
 
-    const handlePushSub = () =>{
+    const handlePushSub = () => {
+
+        //todo: actually check if subscribed and use push manager
+        if (props.pushSubscribed) {
+            props.handlePushSubscribed(false);
+        } else {
+            props.handlePushSubscribed(true);
+        }
+
         if (firebase.messaging.isSupported()) {
             messaging.requestPermission()
-                .then(async function() {
+                .then(async function () {
                     const token = await messaging.getToken();
-                    console.log("token is " + token);
+                    //todo: also handle token refresh, code in function below
+                    // console.log("token is " + token);
+                    if (!props.pushSubscribed) {
+                        props.handleNewPushToken(token);
+                    }
+
+                    // props.container.success(`Your have subscribed to receive push notifications`, `Success`, {
+                    //     closeButton: true,
+                    // });
                 })
-                .catch(function(err) {
+                .catch(function (err) {
                     console.log("Unable to get permission to notify.", err);
                 });
-            messaging.onMessage(function(payload) {
+            messaging.onMessage(function (payload) {
                 console.log("Message received. ", payload);
+                //todo: use this with below code for swReg
+                navigator.serviceWorker.getRegistration('./firebase-messaging-sw.js').then(registration => {
+                    registration.showNotification(
+                        payload.notification.title,
+                        payload.notification
+                    )
+                });
                 // ...
             });
+
             navigator.serviceWorker.addEventListener("message", (message) => console.log(message));
+        } else {
+            props.container.warning(`Your browser doesn't support push notifications`, `Sorry`, {
+                closeButton: true,
+            });
         }
     }
 
-   const registerPush = async () => {
+    const registerPush = async () => {
         const messaging = firebase.messaging();
         // Add the public key generated from the console here.
         messaging.usePublicVapidKey(
@@ -204,21 +227,22 @@ const ProviderDtlFavoriteCard = (props) => {
                 // setTokenSentToServer(false);
             });
 
-        messaging.onMessage(function(payload) {
+        messaging.onMessage(function (payload) {
             console.log("Message received. ", payload);
             // ...
         });
 
         let isSubscribed = false;
         let swRegistration = null;
-        console.log(props.swReg);
 
         if ("serviceWorker" in navigator && "PushManager" in window) {
             console.log("Service Worker and Push is supported");
 
             let applicationServerPublicKey =
                 "BAbQqzrfIWAgTvVnNJVrJvyEoUrh2uBtDYx2iT3cbW5JfKEHJFRn3Ruyjs4H9OsD1rjYDCQRR2UAO_46anL8Sgk";
-            swRegistration = props.swReg;
+            //use code above to complete
+            // swRegistration = props.swReg;
+            swRegistration = null;
             const applicationServerKey = urlB64ToUint8Array(
                 applicationServerPublicKey
             );
@@ -227,7 +251,7 @@ const ProviderDtlFavoriteCard = (props) => {
                     userVisibleOnly: true,
                     applicationServerKey: applicationServerKey
                 })
-                .then(function(subscription) {
+                .then(function (subscription) {
                     console.log("User is subscribed." + subscription);
 
                     // updateSubscriptionOnServer(subscription);
@@ -249,7 +273,7 @@ const ProviderDtlFavoriteCard = (props) => {
 
                     // updateBtn();
                 })
-                .catch(function(err) {
+                .catch(function (err) {
                     console.log("Failed to subscribe the user: ", err);
                     // updateBtn();
                 });
@@ -278,21 +302,30 @@ const ProviderDtlFavoriteCard = (props) => {
 
     const data = props.data;
     const name = data.name;
+
+    let buttonToShow = props.pushSubscribed ?
+        <Button variant="contained" className={classes.button} onClick={() => handlePushSub()}>
+            UNSUBSCRIBE
+        </Button> : <Button variant="contained" className={classes.button} onClick={() => handlePushSub()}>
+            SUBSCRIBE
+        </Button>;
+
+    let buttonDataToShow = props.user != null ? buttonToShow :
+        <div>Must be signed in to subscribe to push notifications</div>;
+
     return (
 
         <Card className={classes.root}>
             <CardContent>
-                <Typography className={classes.title} >
+                <Typography className={classes.title}>
                     Subscribe
                 </Typography>
-                <Typography className={classes.secondText} >
+                <Typography className={classes.secondText}>
                     Subscribe to {name} to get instant push updates
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button variant="contained" className={classes.button} onClick={()=>handlePushSub()}>
-                    SUBSCRIBE
-                </Button>
+                {buttonDataToShow}
             </CardActions>
         </Card>
     )
@@ -305,15 +338,14 @@ const ProviderDtlEmailCard = (props) => {
     const data = props.data;
     const email = data.email;
     const href = `mailto:${email}`;
-    console.log("email:" + email);
     return (
 
         <Card className={classes.root}>
             <CardContent>
-                <Typography className={classes.title} >
+                <Typography className={classes.title}>
                     Email
                 </Typography>
-                <Typography className={classes.secondText} >
+                <Typography className={classes.secondText}>
                     {email}
                 </Typography>
             </CardContent>
@@ -334,15 +366,14 @@ const ProviderDtlVacancyCard = (props) => {
     const bedsUsed = data.bedsUsed;
     const totalBeds = data.totalBeds;
     const availableBeds = totalBeds - bedsUsed;
-    console.log("available beds:" + availableBeds);
     return (
 
         <Card className={classes.root}>
             <CardContent>
-                <Typography className={classes.title} >
+                <Typography className={classes.title}>
                     Available Beds/Rooms
                 </Typography>
-                <Typography className={classes.secondText} >
+                <Typography className={classes.secondText}>
                     {availableBeds}
                 </Typography>
             </CardContent>
@@ -359,13 +390,11 @@ const ProviderDtlShareCard = (props) => {
     const classes = useStyles();
 
 
-
     const data = props.data;
     const name = data.name;
     const currentUrl = window.location.href;
-    console.log("current url:" + currentUrl);
 
-    const shareProvider  = () =>{
+    const shareProvider = () => {
         navigator.clipboard.writeText(currentUrl);
 
         props.container.success(`Link Copied To Clipboard`, `Success`, {
@@ -378,15 +407,15 @@ const ProviderDtlShareCard = (props) => {
 
         <Card className={classes.root}>
             <CardContent>
-                <Typography className={classes.title} >
-                   Share {name}
+                <Typography className={classes.title}>
+                    Share {name}
                 </Typography>
-                <Typography className={classes.secondText} >
+                <Typography className={classes.secondText}>
                     Get a link to share {name}
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button onClick={()=> shareProvider()}  variant="contained"  className={classes.button}>
+                <Button onClick={() => shareProvider()} variant="contained" className={classes.button}>
                     Share!
                 </Button>
             </CardActions>
@@ -406,8 +435,6 @@ const ProviderDtlAddressCard = (props) => {
     const lat = data.lat;
     const long = data.long;
 
-    console.log("long: " + long);
-    console.log("lat: " + lat);
 
     const appleDrivingDirections = `https://maps.apple.com/?q=${lat},${long}`;
     const androidDrivingDirections = `google.navigation:q=${lat},${long}`;
@@ -415,29 +442,27 @@ const ProviderDtlAddressCard = (props) => {
 
     let directionsToUse = webDrivingDirections;
 
-    if(isIOSDevice()){
+    if (isIOSDevice()) {
         directionsToUse = appleDrivingDirections;
     }
 
     let directionComponent = <div></div>;
 
-    if(lat !== "0.0" && long !== "0.0"){
+    if (lat !== "0.0" && long !== "0.0") {
         directionComponent = <Button variant="contained" className={classes.button}>
             <a id="dtlLink" target="_blank" href={directionsToUse}>GET DIRECTIONS</a>
         </Button>;
     }
 
 
-
-    console.log("directions to user:" + directionsToUse);
     return (
 
         <Card className={classes.root}>
             <CardContent>
-                <Typography className={classes.title} >
+                <Typography className={classes.title}>
                     Address
                 </Typography>
-                <Typography className={classes.secondText} >
+                <Typography className={classes.secondText}>
                     {address}
                 </Typography>
             </CardContent>
@@ -450,30 +475,93 @@ const ProviderDtlAddressCard = (props) => {
 
 class ProviderDetail extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             data: {},
-            id:null,
-            container:null
+            pushSubscribed: false,
+            id: null,
+            container: null
         }
     }
 
     componentDidMount() {
         const id = this.props.match.params.id;
-        console.log("dtl id : " + id);
+
+        let pushId = "";
+        let subscribedToPush = false;
+
+        if (this.props.user) {
+            pushId = this.props.user.pushId;
+            // console.log("pushId is " + pushId);
+            if (pushId !== "") {
+                subscribedToPush = true;
+            }
+        }
         this.setState({
             // data: this.props.location.state.data,
-            id: id
-        },()=>{
+            id: id,
+            pushSubscribed: subscribedToPush
+        }, () => {
             this.loadData();
         });
+    }
+
+    handleNewPushToken = async (pushToken) => {
+
+        let URL = "https://careamabrain.cmcoffee91.dev/users/" + this.props.user._id;
+        // let URL = "http://localhost:3000/users/authenticate";
+
+
+        const config = {
+            "Authorization": `Bearer ${this.props.token}`
+        };
+
+        const response = await axios({
+            method: 'put',
+            url: URL,
+            data: {
+                pushId: pushToken,
+            },
+            headers: config
+
+        });
+
+
+        const data = await response.data;
+        const user = data.user;
+        const msg = data.Message;
+
+        if (msg === "Updated User successfully") {
+
+            this.props.setUser(user);
+        } else {
+            console.log("unsuccessfully updated user");
+        }
+
+    }
+
+    handlePushSubscribed = (isSubscribed) => {
+        this.setState({
+            pushSubscribed: isSubscribed
+        });
+        if (isSubscribed) {
+            this.state.container.success(`Your have subscribed to receive push notifications`, `Success`, {
+                closeButton: true,
+            });
+        } else {
+            this.state.container.success(`Your have unsubscribed from push notifications`, `Success`, {
+                closeButton: true,
+            });
+            this.handleNewPushToken("");
+
+        }
     }
 
 
     loadData = async () => {
 
-        let URL = "https://careamabrain.cmcoffee91.dev/providers/" + this.state.id ;
+        let URL = "https://careamabrain.cmcoffee91.dev/providers/" + this.state.id;
 
         const response = await axios({
             method: 'get',
@@ -481,7 +569,6 @@ class ProviderDetail extends Component {
         });
 
         const data = await response.data;
-        console.log("data " + JSON.stringify(data));
 
         this.setState({
             data: data
@@ -500,14 +587,18 @@ class ProviderDetail extends Component {
                     {this.state.data.name}
                 </h1>
                 <div id="cardContainer">
-                    <ProviderDtlPhoneCard data={this.state.data} />
-                    <ProviderDtlEmailCard data={this.state.data} />
-                    <ProviderDtlAddressCard data={this.state.data} />
+                    <ProviderDtlPhoneCard data={this.state.data}/>
+                    <ProviderDtlEmailCard data={this.state.data}/>
+                    <ProviderDtlAddressCard data={this.state.data}/>
                 </div>
                 <div id="cardContainer">
-                    <ProviderDtlVacancyCard data={this.state.data} />
-                    <ProviderDtlShareCard data={this.state.data} container={this.state.container} />
-                    <ProviderDtlFavoriteCard data={this.state.data} swReg={this.props.swRegistration} />
+                    <ProviderDtlVacancyCard data={this.state.data}/>
+                    <ProviderDtlShareCard data={this.state.data} container={this.state.container}/>
+                    <ProviderDtlFavoriteCard data={this.state.data} user={this.props.user}
+                                             handlePushSubscribed={this.handlePushSubscribed}
+                                             handleNewPushToken={this.handleNewPushToken}
+                                             pushSubscribed={this.state.pushSubscribed}
+                                             container={this.state.container}/>
                 </div>
                 <div>
                     <ProviderMap data={this.state.data}/>

@@ -13,19 +13,8 @@ import axios from "axios";
 import AlertDialogSlide from "../AlertDialogSlide";
 import {Steps, Hints} from "intro.js-react";
 import "intro.js/introjs.css";
-import {createMuiTheme} from '@material-ui/core/styles';
-import {ThemeProvider} from "@material-ui/styles";
+import {ToastContainer} from "react-toastr";
 
-const theme = createMuiTheme({
-    palette: {
-        primary: {
-            main: "#132C3C",
-        },
-        secondary: {
-            main: "#132C3C",
-        },
-    },
-});
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -80,18 +69,18 @@ const FormOne = (props) => {
             phone: e.target.value,
         });
     };
-    return <ThemeProvider theme={theme}>
-        <form className={classes.form} noValidate autoComplete="off">
-            <TextField id="name" label="Name" onChange={onChangeName} value={registerComponent.state.name}
-                       variant="outlined"/>
-            <TextField id="title" label="Title" value={registerComponent.state.title} onChange={onChangeTitle}
-                       variant="outlined"/>
-            <TextField id="phone" label="Phone Number" onChange={onChangePhone} value={registerComponent.state.phone}
-                       type="number" variant="outlined"/>
-            <TextField id="email" label="Email" onChange={onChangeEmail} value={registerComponent.state.email}
-                       variant="outlined"/>
-        </form>
-    </ThemeProvider>;
+    return <form className={classes.form} noValidate autoComplete="off">
+        <TextField id="name" label="Name" onChange={onChangeName} value={registerComponent.state.name}
+                   variant="outlined"/>
+        <TextField id="title" label="Title" value={registerComponent.state.title} onChange={onChangeTitle}
+                   variant="outlined"/>
+        <TextField id="phone" label="Phone Number" onChange={onChangePhone} value={registerComponent.state.phone}
+                   type="number" inputProps={{ maxLength: 10 }} onInput={(e)=>{
+            e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,10)
+        }} variant="outlined" />
+        <TextField id="email" label="Email" onChange={onChangeEmail} value={registerComponent.state.email}
+                   variant="outlined"/>
+    </form>;
 }
 
 const FormTwo = (props) => {
@@ -123,18 +112,16 @@ const FormTwo = (props) => {
             zip: e.target.value,
         });
     };
-    return <ThemeProvider theme={theme}>
-        <form className={classes.form} noValidate autoComplete="off">
-            {/*<TextField id="latitude" label="Latitude" onChange={onChangeLatitude} value={registerComponent.state.lat}*/}
-            {/*           variant="outlined"/>*/}
-            {/*<TextField id="longitude" label="Longitude" onChange={onChangeLongitude} value={registerComponent.state.long}*/}
-            {/*           variant="outlined"/>*/}
-            <TextField id="address" label="Address" onChange={onChangeAddress} value={registerComponent.state.address}
-                       variant="outlined"/>
-            <TextField id="zip" label="Zip" onChange={onChangeZip} value={registerComponent.state.zip}
-                       variant="outlined"/>
-        </form>
-    </ThemeProvider>;
+    return <form className={classes.form} noValidate autoComplete="off">
+        {/*<TextField id="latitude" label="Latitude" onChange={onChangeLatitude} value={registerComponent.state.lat}*/}
+        {/*           variant="outlined"/>*/}
+        {/*<TextField id="longitude" label="Longitude" onChange={onChangeLongitude} value={registerComponent.state.long}*/}
+        {/*           variant="outlined"/>*/}
+        <TextField id="address" label="Address" onChange={onChangeAddress} value={registerComponent.state.address}
+                   variant="outlined"/>
+        <TextField id="zip" label="Zip" onChange={onChangeZip} value={registerComponent.state.zip}
+                   variant="outlined"/>
+    </form>;
 }
 
 
@@ -154,15 +141,13 @@ const FormThree = (props) => {
             bedsUsed: e.target.value,
         });
     };
-    return <ThemeProvider theme={theme}>
-        <form className={classes.form} noValidate autoComplete="off">
-            <TextField id="totalBeds" label="Total Beds" onChange={onChangeTotalBeds}
-                       value={registerComponent.state.totalBeds} variant="outlined"/>
-            <TextField id="bedsUsed" label="Used Beds" onChange={onChangeUsedBeds}
-                       value={registerComponent.state.bedsUsed}
-                       variant="outlined"/>
-        </form>
-    </ThemeProvider>;
+    return <form className={classes.form} noValidate autoComplete="off">
+        <TextField id="totalBeds" label="Total Beds" onChange={onChangeTotalBeds}
+                   value={registerComponent.state.totalBeds} variant="outlined"/>
+        <TextField id="bedsUsed" label="Used Beds" onChange={onChangeUsedBeds}
+                   value={registerComponent.state.bedsUsed}
+                   variant="outlined"/>
+    </form>;
 }
 
 const getStepContent = (step, registerComponent) => {
@@ -227,7 +212,6 @@ const HorizontalLinearStepper = (props) => {
 
     const slideAlertCallback = (isTrue) => {
         if (isTrue) {
-            console.log("is true");
             registerComponent.register();
         } else {
             console.log("is false");
@@ -235,6 +219,35 @@ const HorizontalLinearStepper = (props) => {
     }
 
     const askForConfirmation = () => {
+
+
+        if(registerState.email === "" || registerState.address === "" ||registerState.title === ""  || registerState.name === ""  || registerState.zip === "" || registerState.phone === "" || registerState.totalBeds === "" || registerState.bedsUsed === ""){
+            registerComponent.container.error(`Please fill out all fields`, `Error`, {
+                closeButton: true,
+            });
+            return ;
+        }
+
+
+        if(registerState.phone.length !== 10){
+            registerComponent.container.error(`Please enter a 10 digit phone number`, `Error`, {
+                closeButton: true,
+            });
+            return ;
+        }
+
+
+
+        let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let validEmail =  re.test(String(registerState.email).toLowerCase());
+
+        if(!validEmail){
+            registerComponent.container.error(`Please enter a valid email`, `Error`, {
+                closeButton: true,
+            });
+            return ;
+        }
+
         setOpen(true);
     }
 
@@ -267,25 +280,23 @@ const HorizontalLinearStepper = (props) => {
             <AlertDialogSlide open={open} setOpen={setOpen} alertSlideCallback={slideAlertCallback} title={alertTitle}
                               description={alertDescription} yesOptionTitle={yesOptionTitle}
                               noOptionTitle={noOptionTitle}/>
-            <ThemeProvider theme={theme}>
-                <Stepper activeStep={activeStep} nonLinear orientation={"horizontal"}>
-                    {steps.map((label, index) => {
-                        const stepProps = {};
-                        const labelProps = {};
-                        if (isStepOptional(index)) {
-                            labelProps.optional = <Typography variant="caption">Optional</Typography>;
-                        }
-                        if (isStepSkipped(index)) {
-                            stepProps.completed = false;
-                        }
-                        return (
-                            <Step key={label} {...stepProps}>
-                                <StepLabel {...labelProps}>{label}</StepLabel>
-                            </Step>
-                        );
-                    })}
-                </Stepper>
-            </ThemeProvider>
+            <Stepper activeStep={activeStep} nonLinear orientation={"horizontal"}>
+                {steps.map((label, index) => {
+                    const stepProps = {};
+                    const labelProps = {};
+                    if (isStepOptional(index)) {
+                        labelProps.optional = <Typography variant="caption">Optional</Typography>;
+                    }
+                    if (isStepSkipped(index)) {
+                        stepProps.completed = false;
+                    }
+                    return (
+                        <Step key={label} {...stepProps}>
+                            <StepLabel {...labelProps}>{label}</StepLabel>
+                        </Step>
+                    );
+                })}
+            </Stepper>
             <div>
                 <div>
                     <Typography
@@ -316,7 +327,6 @@ const HorizontalLinearStepper = (props) => {
 
 const TutorialButton = (props) => {
     const handleClick = () => {
-        console.log("handleClick");
         props.toggleSteps();
     }
 
@@ -380,8 +390,6 @@ class ProviderRegister extends Component {
 
 
     gotPlace = (place) => {
-        console.log("gotPlace")
-        console.log("got place: " + JSON.stringify(place));
 
         let name = place.name;
         let phone = place.formatted_phone_number;
@@ -403,11 +411,9 @@ class ProviderRegister extends Component {
         let addressComponents = place.address_components;
 
         addressComponents.forEach((address) => {
-            console.log("address: " + JSON.stringify(address));
             let types = address.types;
 
             types.forEach((type) => {
-                console.log("type: " + JSON.stringify(type));
 
                 //todo: change to switch
                 if (type === "postal_code") {
@@ -437,12 +443,6 @@ class ProviderRegister extends Component {
         phone = phone.replace(")", "");
         phone = phone.replace("-", "");
 
-        console.log("geo is " + geometry);
-        console.log("location is " + location);
-        console.log("latitude is " + latitude);
-        console.log("long is " + longitude);
-        console.log("phone is " + phone);
-        console.log("postalCode is " + postalCode);
 
         this.setState({
             name: name,
@@ -459,8 +459,6 @@ class ProviderRegister extends Component {
         let URL = "https://careamabrain.cmcoffee91.dev/providers";
         // let URL = "http://localhost:3000/users/authenticate";
 
-
-        console.log("state " + JSON.stringify(this.state));
 
         const config = {
             "Authorization": `Bearer ${this.props.token}`
@@ -489,20 +487,15 @@ class ProviderRegister extends Component {
 
 
         const data = await response.data;
-        console.log("data " + JSON.stringify(data));
         const msg = data.Message;
         const user = data.updatedUser;
-        console.log("msg " + msg);
 
         if (msg === "Provider created successfully") {
-            console.log("successfully created provider");
             // await this.login();
             this.props.setUser(user);
             this.setState({
                 isCreated: true
             });
-        } else {
-            console.log("unsuccessfully created provider");
         }
 
     }
@@ -523,6 +516,11 @@ class ProviderRegister extends Component {
     render() {
         return !this.state.isCreated ? (
             <div id="registerContainer">
+                <ToastContainer
+                    ref={ref => this.container = ref}
+                    className="toast-bottom-right"
+                />
+
                 <Steps
                     enabled={this.state.stepsEnabled}
                     steps={this.state.steps}

@@ -1,16 +1,17 @@
 import { connect } from 'react-redux';
-import { setSWRegistration} from "../redux/actions";
+import {setUser} from "../redux/actions";
 import ProviderDetail from "../components/ProviderDetail/ProviderDetail";
 
 const mapStateToProps = (state) => {
     return {
-        swRegistration: state.swRegistration,
+        token: state.token,
+        user: state.user,
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setSWRegistration: (value) => dispatch(setSWRegistration(value)),
+        setUser: (user) => dispatch(setUser(user)),
     }
 }
 

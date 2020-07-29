@@ -51,9 +51,9 @@ class ProviderPanel extends Component {
         let URL = "https://careamabrain.cmcoffee91.dev/providersActive";
         // let URL = "http://localhost:3000/providers";
 
-        this.setState({
-            providers: []
-        });
+        // this.setState({
+        //     providers: []
+        // });
 
 
         const response = await axios({
@@ -67,7 +67,6 @@ class ProviderPanel extends Component {
 
 
         const data = await response.data;
-        console.log("data " + JSON.stringify(data));
 
         this.setState({
             providers: data
@@ -76,8 +75,6 @@ class ProviderPanel extends Component {
     }
 
     render() {
-        console.log("token is " + this.props.token);
-        console.log("user is " + JSON.stringify(this.props.user));
         let providerButton = <Button variant="contained" id="providerButton" to="/providerSignup" component={Link}>
             Add New Provider
         </Button> ;
@@ -88,7 +85,7 @@ class ProviderPanel extends Component {
             <div id="providerContainer">
                 <div id="actionContainer">
                     <ThemeProvider theme={theme}>
-                    <TextField id="search" label="Search" onChange={this.searchChanged}  variant="outlined"/>
+                    <TextField id="search" label="Search" onChange={this.searchChanged} type="search" variant="outlined"/>
                     </ThemeProvider>
                     {providerButton}
 

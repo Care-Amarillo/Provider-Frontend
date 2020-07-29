@@ -13,6 +13,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import TableChartIcon from '@material-ui/icons/TableChart';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import SendIcon from '@material-ui/icons/Send';
 
 
 const drawerWidth = 250;
@@ -151,6 +152,18 @@ const EditProviderListItem = (props) => {
 }
 
 
+const SuperAdminEditUsersListItem = (props) => {
+    return <ListItem key="editAllUsers" onClick={()=>props.handleClick()} component={Link} to={"/superAdminUsers"}>
+        {/*<ListItemIcon>*/}
+        {/*    <AccountCircleIcon/>*/}
+
+        {/*</ListItemIcon>*/}
+        {/*<ListItemText primary="Manage Provider"/>*/}
+        <Button startIcon={<EditIcon/>}>Manage All Users</Button>
+    </ListItem>;
+}
+
+
 
 const UserListItem = (props) => {
 
@@ -173,6 +186,19 @@ const SuperAdminProvidersListItem = (props) => {
         {/*</ListItemIcon>*/}
         {/*<ListItemText primary="Manage Providers"/>*/}
         <Button startIcon={<EditIcon/>}>Manage Providers</Button>
+    </ListItem>;
+}
+
+
+const SuperAdminSendPushListItem = (props) => {
+
+    return <ListItem key="superAdminSendPush" onClick={()=>props.handleClick()} component={Link} to={"/superAdminSendPush"}>
+        {/*<ListItemIcon>*/}
+        {/*    <AccountCircleIcon/>*/}
+
+        {/*</ListItemIcon>*/}
+        {/*<ListItemText primary="Manage Providers"/>*/}
+        <Button startIcon={<SendIcon/>}>Send Push</Button>
     </ListItem>;
 }
 
@@ -201,12 +227,9 @@ const CareAppDrawer = (props) => {
     const listOfListItems = [];
 
     const handleClick = () =>{
-        console.log("handleclick");
         props.setOpen(false);
     }
 
-    console.log("props.token appDrawer: " + props.token);
-    console.log("props.user appDrawer: " + JSON.stringify(props.user));
 
     //todo: check active status of user and providers
 
@@ -229,6 +252,8 @@ const CareAppDrawer = (props) => {
         listOfListItems.push(<AuditListItem handleClick={handleClick}/>);
         listOfListItems.push(<SuperAdminProvidersListItem handleClick={handleClick}/>);
         listOfListItems.push(<SuperAdminProviderEntryListItem handleClick={handleClick}/>);
+        listOfListItems.push(<SuperAdminSendPushListItem handleClick={handleClick}/>);
+        listOfListItems.push(<SuperAdminEditUsersListItem handleClick={handleClick}/>);
     }
 
     if (props.token) {

@@ -60,7 +60,6 @@ const ProviderCard = (props) => {
     const data = props.data;
     const title = data.title;
     const name = data.name;
-    console.log("title :" + title);
     return (
 
         <Card className={classes.root}>

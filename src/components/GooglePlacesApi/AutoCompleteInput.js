@@ -37,10 +37,7 @@ function handleScriptLoad(updateQuery, autoCompleteRef, onChange) {
 async function handlePlaceSelect(updateQuery, onChange) {
     const placeObject = autoComplete.getPlace();
     const name = placeObject.name;
-    console.log(autoComplete);
-    // updateQuery(query);
     updateQuery(name);
-    console.log(placeObject);
     onChange(placeObject);
 }
 

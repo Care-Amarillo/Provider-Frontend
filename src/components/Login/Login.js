@@ -8,6 +8,7 @@ import TextField from '@material-ui/core/TextField';
 import {Link, Redirect} from "react-router-dom";
 import {createMuiTheme} from '@material-ui/core/styles';
 import {ThemeProvider} from "@material-ui/styles";
+import {ToastContainer} from "react-toastr";
 
 const theme = createMuiTheme({
     palette: {
@@ -94,13 +95,22 @@ class Login extends Component {
     }
 
     loginClicked = () => {
+        if(this.state.email === "" || this.state.password === ""){
+            this.container.error(`Please fill out all fields`, `Error`, {
+                closeButton: true,
+            });
+            return ;
+        }
         this.login();
     }
 
     render() {
-        console.log("props.token login:" + this.props.token);
         return !this.props.token ?  (
             <div id="loginContainer">
+                <ToastContainer
+                    ref={ref => this.container = ref}
+                    className="toast-bottom-right"
+                />
 
                 <LoginForm onChangeEmail={this.onChangeEmail} onChangePass={this.onChangePass}
                            loginClicked={this.loginClicked}/>

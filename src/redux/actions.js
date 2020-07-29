@@ -11,7 +11,6 @@ export const setToken = (stateObj) => {
 
         let theUsername = stateObj.email;
         let thePassword = stateObj.password;
-        console.log(`The given username is ${theUsername} and the given password is ${thePassword}.`);
         // Make a JSON object that will be passed to the backend API
         let credentials = {
             email: theUsername,
@@ -26,11 +25,9 @@ export const setToken = (stateObj) => {
 
 
         const data = await response.data;
-        console.log("data " + JSON.stringify(data));
         const user = data.user;
         const token = data.token;
-        console.log("user " + JSON.stringify(data.user));
-        console.log("token " + JSON.stringify(data.token));
+        // console.log(`login data is ${JSON.stringify(data)}`);
 
         const action = {
             type: "SET_TOKEN",

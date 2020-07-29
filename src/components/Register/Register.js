@@ -10,19 +10,8 @@ import './Register.css';
 import {Redirect} from "react-router-dom";
 import axios from "axios";
 import AlertDialogSlide from "../AlertDialogSlide";
-import {createMuiTheme} from '@material-ui/core/styles';
-import {ThemeProvider} from "@material-ui/styles";
+import {ToastContainer} from "react-toastr";
 
-const theme = createMuiTheme({
-    palette: {
-        primary: {
-            main: "#132C3C",
-        },
-        secondary: {
-            main: "#132C3C",
-        },
-    },
-});
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -71,11 +60,13 @@ const FormOne = (props) => {
             phone: e.target.value,
         });
     };
-    return <ThemeProvider theme={theme}> <form className={classes.form} noValidate autoComplete="off">
-        <TextField id="firstName" label="First Name" onChange={onChangeFirstName} variant="outlined"/>
-        <TextField id="lastName" label="Last Name" onChange={onChangeLastName} variant="outlined"/>
-        <TextField id="phone" label="Phone Number" onChange={onChangePhone} type="number" variant="outlined"/>
-    </form></ThemeProvider>;
+    return <form className={classes.form} noValidate autoComplete="off">
+        <TextField id="firstName" label="First Name" onChange={onChangeFirstName} variant="outlined" value={registerComponent.state.firstName}/>
+        <TextField id="lastName" label="Last Name" value={registerComponent.state.lastName} onChange={onChangeLastName} variant="outlined"/>
+        <TextField id="phone" label="Phone Number"  inputProps={{ maxLength: 10 }} onInput={(e)=>{
+            e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,10)
+        }} onChange={onChangePhone} type="number" value={registerComponent.state.phone} variant="outlined"/>
+    </form>;
 }
 
 const FormTwo = (props) => {
@@ -99,12 +90,12 @@ const FormTwo = (props) => {
             confirmPassword: e.target.value,
         });
     };
-    return <ThemeProvider theme={theme}> <form className={classes.form} noValidate autoComplete="off">
-        <TextField id="email" label="Email" onChange={onChangeEmail} variant="outlined"/>
-        <TextField id="password" label="Password" onChange={onChangePass} type="password" variant="outlined"/>
-        <TextField id="confirmPassword" label="Confirm Password" onChange={onChangeConfirmPass} type="password"
+    return <form className={classes.form} noValidate autoComplete="off">
+        <TextField id="email" label="Email" value={registerComponent.state.email} onChange={onChangeEmail} variant="outlined"/>
+        <TextField id="password" label="Password" value={registerComponent.state.password} onChange={onChangePass} type="password" variant="outlined"/>
+        <TextField id="confirmPassword" label="Confirm Password" value={registerComponent.state.confirmPassword} onChange={onChangeConfirmPass} type="password"
                    variant="outlined"/>
-    </form> </ThemeProvider>;
+    </form>;
 }
 
 const getStepContent = (step, registerComponent) => {
@@ -161,7 +152,6 @@ const HorizontalLinearStepper = (props) => {
             newSkipped = new Set(newSkipped.values());
             newSkipped.delete(activeStep);
         }
-        console.log("login state is " + JSON.stringify(registerState));
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         setSkipped(newSkipped);
@@ -173,7 +163,6 @@ const HorizontalLinearStepper = (props) => {
 
     const slideAlertCallback = (isTrue) => {
         if (isTrue) {
-            console.log("is true");
             registerComponent.register();
         } else {
             console.log("is false");
@@ -181,6 +170,50 @@ const HorizontalLinearStepper = (props) => {
     }
 
     const askForConfirmation = () => {
+
+        if(registerState.email === "" || registerState.password === "" ||registerState.confirmPassword === ""  || registerState.firstName === ""  || registerState.lastName === "" || registerState.phone === ""){
+            registerComponent.container.error(`Please fill out all fields`, `Error`, {
+                closeButton: true,
+            });
+            return ;
+        }
+
+        if(registerState.password !== registerState.confirmPassword){
+            registerComponent.container.error(`Passwords do not match`, `Error`, {
+                closeButton: true,
+            });
+            return ;
+        }
+
+
+        if(registerState.phone.length !== 10){
+            registerComponent.container.error(`Please enter a 10 digit phone number`, `Error`, {
+                closeButton: true,
+            });
+            return ;
+        }
+
+        if(registerState.password.length < 6){
+            registerComponent.container.error(`Please enter a password with at least a length of 6 characters`, `Error`, {
+                closeButton: true,
+            });
+            return ;
+        }
+
+        let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let validEmail =  re.test(String(registerState.email).toLowerCase());
+
+        if(!validEmail){
+            registerComponent.container.error(`Please enter a valid email`, `Error`, {
+                closeButton: true,
+            });
+            return ;
+        }
+
+
+
+
+
         setOpen(true);
     }
 
@@ -206,8 +239,8 @@ const HorizontalLinearStepper = (props) => {
     return (
         <div className={classes.root}>
             <AlertDialogSlide open={open} setOpen={setOpen} alertSlideCallback={slideAlertCallback} title={alertTitle}
-                              description={alertDescription} yesOptionTitle={yesOptionTitle} noOptionTitle={noOptionTitle}/>
-            <ThemeProvider theme={theme}>
+                              description={alertDescription} yesOptionTitle={yesOptionTitle}
+                              noOptionTitle={noOptionTitle}/>
             <Stepper activeStep={activeStep} nonLinear orientation={"horizontal"}>
                 {steps.map((label, index) => {
                     const stepProps = {};
@@ -229,7 +262,7 @@ const HorizontalLinearStepper = (props) => {
                 {activeStep === steps.length ? (
                     <div>
                         <Typography className={classes.instructions}>
-                           Double Check Your Information
+                            Double Check Your Information
                             <div id="doubleCheckInfo">
                                 <div>
                                     First Name: {registerState.firstName}
@@ -247,7 +280,7 @@ const HorizontalLinearStepper = (props) => {
                         </Typography>
 
 
-                        <Button color="primary" onClick={ ()=> registerComponent.register()} className={classes.button}>
+                        <Button color="primary" onClick={() => registerComponent.register()} className={classes.button}>
                             Register
                         </Button>
                     </div>
@@ -273,11 +306,9 @@ const HorizontalLinearStepper = (props) => {
                     </div>
                 )}
             </div>
-            </ThemeProvider>
         </div>
     );
 }
-
 
 
 class Register extends Component {
@@ -295,7 +326,10 @@ class Register extends Component {
         }
     }
 
-     register = async() =>{
+    register = async () => {
+
+
+
         let URL = "https://careamabrain.cmcoffee91.dev/users";
         // let URL = "http://localhost:3000/users/authenticate";
 
@@ -303,7 +337,6 @@ class Register extends Component {
             jwt: []
         });
 
-        console.log("state " + JSON.stringify(this.state));
 
         const response = await axios({
             method: 'post',
@@ -318,41 +351,38 @@ class Register extends Component {
                 superAdmin: false,
                 userType: 1,
                 email: this.state.email,
-                password: this.state.password
+                password: this.state.password,
+                confirmPassword: this.state.password
             }
         });
 
 
         const data = await response.data;
-        console.log("data " + JSON.stringify(data));
         const user = data.user;
         const msg = data.Message;
-        console.log("user " + JSON.stringify(user));
-        console.log("msg " + msg);
 
-        if(msg === "Person created successfully"){
-            console.log("successfully created user");
+        if (msg === "Person created successfully") {
             this.props.setToken(this.state);
-        }
-        else{
+        } else {
             console.log("unsuccessfully created user");
         }
 
     }
 
 
-
-
-
     componentDidMount() {
     }
 
     render() {
-        return !this.props.token ?  (
+        return !this.props.token ? (
             <div id="registerContainer">
+                <ToastContainer
+                    ref={ref => this.container = ref}
+                    className="toast-bottom-right"
+                />
                 <HorizontalLinearStepper registerComponent={this}/>
             </div>
-        ):  <Redirect to="/provider"/>;
+        ) : <Redirect to="/provider"/>;
     }
 }
 

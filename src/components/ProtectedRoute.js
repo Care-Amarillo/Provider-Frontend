@@ -13,7 +13,6 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
 }
 
 const checkAuth = (theJWT) => {
-    console.log(theJWT);
     if(theJWT != null) {
         return true;
     } else {

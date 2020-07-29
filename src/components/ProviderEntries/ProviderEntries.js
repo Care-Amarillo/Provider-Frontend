@@ -143,11 +143,8 @@ class ProviderEntries extends Component {
         });
 
         const data = await response.data;
-        console.log("data " + JSON.stringify(data));
-        console.log("data length:" + data.length);
         if (data.length > 0) {
             let provider = data[0].provider;
-            console.log("provider title is " + provider.title);
             this.setState({
                     name: provider.name,
                     providerId: provider._id,
@@ -167,8 +164,6 @@ class ProviderEntries extends Component {
 
     loadData = async () => {
 
-        console.log("sstart date:" + this.state.selectedStartDate.toISOString());
-        console.log("end date:" + this.state.selectedEndDate.toISOString());
 
         let URL = "https://careamabrain.cmcoffee91.dev/providerEntriesByDate/" + this.state.providerId + "?startDate=" + this.state.selectedStartDate.toISOString() + "&endDate=" + this.state.selectedEndDate.toISOString();
 
@@ -189,7 +184,6 @@ class ProviderEntries extends Component {
 
 
         const data = await response.data;
-        console.log("data " + JSON.stringify(data));
 
         this.setState({
             entries: data
@@ -199,6 +193,17 @@ class ProviderEntries extends Component {
 
     handleStartDateChange = (e) => {
         // setSelectedStartDate(e);
+        if (Object.prototype.toString.call(e) === "[object Date]") {
+            // it is a date
+            if (isNaN(e.getTime())) {  // d.valueOf() could also work
+                // date is not valid
+                return;
+            }
+            // date is valid
+        } else {
+            // not a date
+            return;
+        }
         this.setState({
                 selectedStartDate: e,
 
@@ -209,7 +214,18 @@ class ProviderEntries extends Component {
     };
 
     handleEndDateChange = (e) => {
-        // setSelectedEndDate(e);
+        if (Object.prototype.toString.call(e) === "[object Date]") {
+            // it is a date
+            if (isNaN(e.getTime())) {  // d.valueOf() could also work
+                // date is not valid
+                return;
+            }
+                // date is valid
+        } else {
+            // not a date
+            return;
+        }
+
         this.setState({
                 selectedEndDate: e
             },
@@ -232,7 +248,6 @@ class ProviderEntries extends Component {
 
 
     updateSignInStatus = (isSignedIn) => {
-        console.log("updateSignInStatus = " + isSignedIn);
         if (isSignedIn) {
             this.makeGoogleSheetsApiCall();
             // saveDataToSheet();
@@ -272,10 +287,6 @@ class ProviderEntries extends Component {
         let sheetOne = sheets[0];
         let sheetId = result.spreadsheetId;
         let sheetUrl = result.spreadsheetUrl;
-        console.log("sheets " + sheets);
-        console.log("sheetOne " + sheetOne);
-        console.log("sheetOne id " + sheetId);
-        console.log("sheetOne url " + sheetUrl);
 
         this.setState({
             sheetUrl: sheetUrl
@@ -319,21 +330,19 @@ class ProviderEntries extends Component {
         });
         // Additional ranges to update.
 
-        var body = {
+        let body = {
             data: data,
             valueInputOption: 'RAW'
         };
 
-        var spreadsheetId = sheetId;
+        let spreadsheetId = sheetId;
 
-        console.log("arr " + JSON.stringify(arr));
 
         window.gapi.client.sheets.spreadsheets.values.batchUpdate({
             spreadsheetId: spreadsheetId,
             resource: body
         }).then((response) => {
-            var result = response.result;
-            console.log(`${result.totalUpdatedCells} cells updated.`);
+            let result = response.result;
         });
     }
 
@@ -436,10 +445,8 @@ class ProviderEntries extends Component {
 
     slideAlertCallback = (isCSV) => {
         if (isCSV) {
-            console.log("is csv");
             this.exportReport();
         } else {
-            console.log("is sheets");
             this.exportReportToGoogleSheets();
         }
     }
@@ -447,14 +454,12 @@ class ProviderEntries extends Component {
 
     sheetsSlideAlertCallback = (isCopy) => {
         if (isCopy) {
-            console.log("is copy");
             navigator.clipboard.writeText(this.state.sheetUrl);
 
             this.container.success(`Link Copied To Clipboard`, `Success`, {
                 closeButton: true,
             });
         } else {
-            console.log("is open in new tab");
             window.open(this.state.sheetUrl, '_blank');
         }
     }

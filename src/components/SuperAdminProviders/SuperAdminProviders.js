@@ -100,7 +100,6 @@ const AuditTable = (props) => {
                     tooltip: 'Edit Provider',
                     onClick: (event, rowData) => {
                         // Do save operation
-                        console.log("editProvider");
                     }
                 }
             ]}
@@ -178,10 +177,8 @@ class SuperAdminProviders extends Component {
 
     slideAlertCallback = (isCSV) => {
         if (isCSV) {
-            console.log("is csv" );
             this.exportReport();
         } else {
-            console.log("is sheets");
             this.exportReportToGoogleSheets();
         }
     }
@@ -189,14 +186,12 @@ class SuperAdminProviders extends Component {
 
     sheetsSlideAlertCallback = (isCopy) => {
         if (isCopy) {
-            console.log("is copy" );
             navigator.clipboard.writeText(this.state.sheetUrl);
 
             this.container.success(`Link Copied To Clipboard`, `Success`, {
                 closeButton: true,
             });
         } else {
-            console.log("is open in new tab");
             window.open(this.state.sheetUrl, '_blank');
         }
     }
@@ -225,7 +220,6 @@ class SuperAdminProviders extends Component {
 
 
         const data = await response.data;
-        console.log("data " + JSON.stringify(data));
 
         this.setState({
             providers: data
@@ -238,6 +232,17 @@ class SuperAdminProviders extends Component {
 
     handleStartDateChange = (e) => {
         // setSelectedStartDate(e);
+        if (Object.prototype.toString.call(e) === "[object Date]") {
+            // it is a date
+            if (isNaN(e.getTime())) {  // d.valueOf() could also work
+                // date is not valid
+                return;
+            }
+            // date is valid
+        } else {
+            // not a date
+            return;
+        }
         this.setState({
                 selectedStartDate: e,
 
@@ -249,6 +254,17 @@ class SuperAdminProviders extends Component {
 
     handleEndDateChange = (e) => {
         // setSelectedEndDate(e);
+        if (Object.prototype.toString.call(e) === "[object Date]") {
+            // it is a date
+            if (isNaN(e.getTime())) {  // d.valueOf() could also work
+                // date is not valid
+                return;
+            }
+            // date is valid
+        } else {
+            // not a date
+            return;
+        }
         this.setState({
                 selectedEndDate: e
             },
@@ -348,7 +364,6 @@ class SuperAdminProviders extends Component {
 
 
     updateSignInStatus = (isSignedIn) => {
-        console.log("updateSignInStatus = " + isSignedIn);
         if (isSignedIn) {
             this.makeGoogleSheetsApiCall();
             // saveDataToSheet();
@@ -388,10 +403,6 @@ class SuperAdminProviders extends Component {
         let sheetOne = sheets[0];
         let sheetId = result.spreadsheetId;
         let sheetUrl = result.spreadsheetUrl;
-        console.log("sheets " + sheets);
-        console.log("sheetOne " + sheetOne);
-        console.log("sheetOne id " + sheetId);
-        console.log("sheetOne url " + sheetUrl);
 
         this.setState({
             sheetUrl: sheetUrl
@@ -461,14 +472,12 @@ class SuperAdminProviders extends Component {
 
         let spreadsheetId = sheetId;
 
-        console.log("arr " + JSON.stringify(arr));
 
         window.gapi.client.sheets.spreadsheets.values.batchUpdate({
             spreadsheetId: spreadsheetId,
             resource: body
         }).then((response) => {
             let result = response.result;
-            console.log(`${result.totalUpdatedCells} cells updated.`);
         });
     }
 

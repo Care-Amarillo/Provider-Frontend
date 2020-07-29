@@ -10,18 +10,7 @@ import './EditUser.css';
 import axios from "axios";
 import AlertDialogSlide from "../AlertDialogSlide";
 import {ToastContainer} from "react-toastr";
-import { createMuiTheme } from '@material-ui/core/styles';
-import {ThemeProvider} from "@material-ui/styles";
-const theme = createMuiTheme({
-    palette: {
-        primary: {
-            main: "#132C3C",
-        },
-        secondary: {
-            main: "#132C3C",
-        },
-    },
-});
+import {createMuiTheme} from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,10 +18,10 @@ const useStyles = makeStyles((theme) => ({
     },
     button: {
         marginRight: theme.spacing(1),
-        backgroundColor:"#132C3C",
-        color:"white",
-        '&:disabled':{
-            backgroundColor:"lightgrey"
+        backgroundColor: "#132C3C",
+        color: "white",
+        '&:disabled': {
+            backgroundColor: "lightgrey"
         },
         '&:hover': {
             backgroundColor: "#132C3C",
@@ -75,11 +64,13 @@ const FormOne = (props) => {
     };
 
 
-    return <ThemeProvider theme={theme}> <form className={classes.form} noValidate autoComplete="off">
-        <TextField id="firstName" label="First Name" value={registerComponent.state.fName} onChange={onChangeFirstName} variant="outlined"/>
-        <TextField id="lastName" label="Last Name" onChange={onChangeLastName} value={registerComponent.state.lName} variant="outlined"/>
+    return <form className={classes.form} noValidate autoComplete="off">
+        <TextField id="firstName" label="First Name" value={registerComponent.state.fName} onChange={onChangeFirstName}
+                   variant="outlined"/>
+        <TextField id="lastName" label="Last Name" onChange={onChangeLastName} value={registerComponent.state.lName}
+                   variant="outlined"/>
 
-    </form></ThemeProvider>;
+    </form>;
 }
 
 const FormTwo = (props) => {
@@ -98,11 +89,13 @@ const FormTwo = (props) => {
         });
     };
 
-    return <ThemeProvider theme={theme}> <form className={classes.form} noValidate autoComplete="off">
-        <TextField id="email" label="Email" onChange={onChangeEmail} value={registerComponent.state.email} variant="outlined"/>
-        <TextField id="phone" label="Phone Number" onChange={onChangePhone} value={registerComponent.state.phone} type="number" variant="outlined"/>
+    return <form className={classes.form} noValidate autoComplete="off">
+        <TextField id="email" label="Email" onChange={onChangeEmail} value={registerComponent.state.email}
+                   variant="outlined"/>
+        <TextField id="phone" label="Phone Number" onChange={onChangePhone} value={registerComponent.state.phone}
+                   type="number" variant="outlined"/>
 
-    </form></ThemeProvider>;
+    </form>;
 }
 
 const getStepContent = (step, registerComponent) => {
@@ -159,7 +152,6 @@ const HorizontalLinearStepper = (props) => {
             newSkipped = new Set(newSkipped.values());
             newSkipped.delete(activeStep);
         }
-        console.log("login state is " + JSON.stringify(registerState));
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         setSkipped(newSkipped);
@@ -191,10 +183,8 @@ const HorizontalLinearStepper = (props) => {
 
     const slideAlertCallback = (isTrue) => {
         if (isTrue) {
-            console.log("is true");
             registerComponent.updateUser();
         } else {
-            console.log("is false");
         }
     }
 
@@ -205,8 +195,8 @@ const HorizontalLinearStepper = (props) => {
     return (
         <div className={classes.root}>
             <AlertDialogSlide open={open} setOpen={setOpen} alertSlideCallback={slideAlertCallback} title={alertTitle}
-                              description={alertDescription} yesOptionTitle={yesOptionTitle} noOptionTitle={noOptionTitle}/>
-            <ThemeProvider theme={theme}>
+                              description={alertDescription} yesOptionTitle={yesOptionTitle}
+                              noOptionTitle={noOptionTitle}/>
             <Stepper activeStep={activeStep} orientation={"horizontal"}>
                 {steps.map((label, index) => {
                     const stepProps = {};
@@ -224,7 +214,6 @@ const HorizontalLinearStepper = (props) => {
                     );
                 })}
             </Stepper>
-            </ThemeProvider>
             <div>
                 {activeStep === steps.length ? (
                     <div>
@@ -246,7 +235,8 @@ const HorizontalLinearStepper = (props) => {
                             </div>
                         </Typography>
 
-                        <Button color="primary" onClick={ ()=> registerComponent.updateUser()} className={classes.button}>
+                        <Button color="primary" onClick={() => registerComponent.updateUser()}
+                                className={classes.button}>
                             Register
                         </Button>
                     </div>
@@ -277,7 +267,6 @@ const HorizontalLinearStepper = (props) => {
 }
 
 
-
 class EditProfile extends Component {
     constructor(props) {
         super(props);
@@ -290,12 +279,10 @@ class EditProfile extends Component {
         }
     }
 
-    updateUser = async() =>{
+    updateUser = async () => {
         let URL = "https://careamabrain.cmcoffee91.dev/users/" + this.props.user._id;
         // let URL = "http://localhost:3000/users/authenticate";
 
-
-        console.log("state " + JSON.stringify(this.state));
 
         const config = {
             "Authorization": `Bearer ${this.props.token}`
@@ -310,33 +297,25 @@ class EditProfile extends Component {
                 lName: this.state.lName,
                 email: this.state.email,
             },
-            headers:config
+            headers: config
 
         });
 
 
         const data = await response.data;
-        console.log("data " + JSON.stringify(data));
         const user = data.user;
         const msg = data.Message;
-        console.log("user " + JSON.stringify(user));
-        console.log("msg " + msg);
 
-        if(msg === "Updated User successfully"){
-            console.log("successfully updated user");
+        if (msg === "Updated User successfully") {
             this.container.success(`Profile Updated`, `Success`, {
                 closeButton: true,
             });
             this.props.setUser(user);
-        }
-        else{
+        } else {
             console.log("unsuccessfully updated user");
         }
 
     }
-
-
-
 
 
     componentDidMount() {
@@ -349,7 +328,6 @@ class EditProfile extends Component {
     }
 
     render() {
-        console.log("user edit user: " + JSON.stringify(this.props.user));
         return <div id="registerContainer">
             <ToastContainer
                 ref={ref => this.container = ref}

@@ -19,6 +19,8 @@ import SuperProtectedRoute from "../../containers/SuperProtectedRoute";
 import SuperAdminProviders from "../../containers/SuperAdminProviders";
 import SuperAdminEditProvider from "../../containers/SuperAdminEditProvider";
 import SuperAdminProviderEntries from "../../containers/SuperAdminProviderEntries";
+import SuperAdminSendPush from "../../containers/SuperAdminSendPush";
+import SuperAdminUsers from "../../containers/SuperAdminUsers";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -46,6 +48,8 @@ function ResponsiveDrawer(props) {
                             <SuperProtectedRoute exact path="/audit" component={AuditEntries} />
                             <SuperProtectedRoute exact path="/superAdminProviders" component={SuperAdminProviders} />
                             <SuperProtectedRoute exact path="/superAdminProviderEntry" component={SuperAdminProviderEntries} />
+                            <SuperProtectedRoute exact path="/superAdminSendPush" component={SuperAdminSendPush} />
+                            <SuperProtectedRoute exact path="/superAdminUsers" component={SuperAdminUsers} />
                             <SuperProtectedRoute exact path="/superAdminEditProvider/:id" component={SuperAdminEditProvider} />
                             <ProtectedRoute exact path="/providerSignUp" component={ProviderRegister} />
                             <ProtectedRoute exact path="/providerEntry" component={ProviderEntries} />

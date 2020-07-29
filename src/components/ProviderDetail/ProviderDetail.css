@@ -36,7 +36,6 @@ h5{
 
 @media only screen and (max-width: 600px) {
     #cardContainer{
-        /*background-color: blue;*/
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -48,6 +47,5 @@ h5{
         height: 100%;
         display: flex;
         flex-direction: column;
-        background-color: blue;
     }
 }
