@@ -44,12 +44,11 @@ async function handlePlaceSelect(updateQuery, onChange) {
 const AutoCompleteInput = (props) => {
     const [query, setQuery] = useState("");
     const autoCompleteRef = useRef(null);
-    //todo: move key to env
-    const GOOGLE_API_KEY = "AIzaSyCOvmLGpbzVEgMywSh3g4g6mbaynTbdIiU";
+
 
     useEffect(() => {
         loadScript(
-            `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`,
+            `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_AUTOCOMPLETE_GOOGLE_API_KEY}&libraries=places`,
             () => handleScriptLoad(setQuery, autoCompleteRef, props.onChange)
         );
     }, []);

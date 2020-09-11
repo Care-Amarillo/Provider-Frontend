@@ -263,12 +263,12 @@ class SuperAdminProviderEntries extends Component {
 
     initClient = async () => {
         await window.gapi.client.init({
-            apiKey: API_KEY,
+            apiKey: process.env.REACT_APP_SHEETS_GOOGLE_API_KEY,
             discoveryDocs: DISCOVERY_DOCS,
         });
 
         await window.gapi.auth2.init({
-            client_id: CLIENT_ID,
+            client_id: process.env.REACT_APP_SHEETS_CLIENT_ID,
             scope: SCOPES
         });
 

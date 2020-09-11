@@ -60,9 +60,6 @@ const tableIcons = {
 };
 
 
-const CLIENT_ID = '461686716459-krre353uecr54mdkbbj094vf9mevti55.apps.googleusercontent.com';
-const API_KEY = 'AIzaSyCOvmLGpbzVEgMywSh3g4g6mbaynTbdIiU';
-
 // Array of API discovery doc URLs for APIs used by the quickstart
 const DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
 
@@ -256,12 +253,12 @@ class ProviderEntries extends Component {
 
     initClient = async () => {
         await window.gapi.client.init({
-            apiKey: API_KEY,
+            apiKey: process.env.REACT_APP_SHEETS_GOOGLE_API_KEY,
             discoveryDocs: DISCOVERY_DOCS,
         });
 
         await window.gapi.auth2.init({
-            client_id: CLIENT_ID,
+            client_id: process.env.REACT_APP_SHEETS_CLIENT_ID,
             scope: SCOPES
         });
 
