@@ -330,7 +330,7 @@ class Register extends Component {
 
 
 
-        let URL = "https://careamabrain.cmcoffee91.dev/users";
+        let URL = "http://localhost:3000/users";
         // let URL = "http://localhost:3000/users/authenticate";
 
         this.setState({

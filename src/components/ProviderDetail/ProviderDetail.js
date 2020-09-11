@@ -509,7 +509,7 @@ class ProviderDetail extends Component {
 
     handleNewPushToken = async (pushToken) => {
 
-        let URL = "https://careamabrain.cmcoffee91.dev/users/" + this.props.user._id;
+        let URL = "http://localhost:3000/users/" + this.props.user._id;
         // let URL = "http://localhost:3000/users/authenticate";
 
 
@@ -561,7 +561,7 @@ class ProviderDetail extends Component {
 
     loadData = async () => {
 
-        let URL = "https://careamabrain.cmcoffee91.dev/providers/" + this.state.id;
+        let URL = "http://localhost:3000/providers/" + this.state.id;
 
         const response = await axios({
             method: 'get',

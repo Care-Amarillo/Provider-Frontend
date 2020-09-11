@@ -203,7 +203,7 @@ class SuperAdminUsers extends Component {
 
     loadProviderData = async () => {
 
-        let URL = "https://careamabrain.cmcoffee91.dev/users";
+        let URL = "http://localhost:3000/users";
 
         this.setState({
             providers: []

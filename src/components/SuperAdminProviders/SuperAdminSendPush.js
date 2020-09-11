@@ -64,7 +64,7 @@ class SuperAdminSendPush extends Component {
     sendPush = async () => {
 
 
-        let PUSH_URL = "https://careamabrain.cmcoffee91.dev/push/globalPush";
+        let PUSH_URL = "http://localhost:3000/push/globalPush";
 
 
         let title = this.state.title;

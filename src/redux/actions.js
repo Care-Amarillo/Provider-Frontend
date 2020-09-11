@@ -5,8 +5,7 @@ export const setToken = (stateObj) => {
     // perform the actual authentication, and then return as the "value" the actual retrieved token.
     return async (dispatch) => {
 
-        let AUTHENTICATE_URL = "https://careamabrain.cmcoffee91.dev/users/authenticate";
-        // let AUTHENTICATE_URL = "http://localhost:3000/users/authenticate";
+        let AUTHENTICATE_URL = "http://localhost:3000/users/authenticate";
 
 
         let theUsername = stateObj.email;

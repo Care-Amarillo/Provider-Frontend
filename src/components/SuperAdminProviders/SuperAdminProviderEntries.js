@@ -137,7 +137,7 @@ class SuperAdminProviderEntries extends Component {
 
     loadProviderData = async () => {
 
-        let URL = "https://careamabrain.cmcoffee91.dev/managingUsers/user/" + this.props.user._id;
+        let URL = "http://localhost:3000/managingUsers/user/" + this.props.user._id;
 
         const config = {
             "Authorization": `Bearer ${this.props.token}`
@@ -172,7 +172,7 @@ class SuperAdminProviderEntries extends Component {
     loadData = async () => {
 
 
-        let URL = "https://careamabrain.cmcoffee91.dev/providerEntries?startDate=" + this.state.selectedStartDate.toISOString() + "&endDate=" + this.state.selectedEndDate.toISOString();
+        let URL = "http://localhost:3000/providerEntries?startDate=" + this.state.selectedStartDate.toISOString() + "&endDate=" + this.state.selectedEndDate.toISOString();
 
         this.setState({
             entries: []

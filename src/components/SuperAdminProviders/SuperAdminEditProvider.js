@@ -426,7 +426,7 @@ class SuperAdminEditProvider extends Component {
     }
 
     updateProvider = async () => {
-        let URL = "https://careamabrain.cmcoffee91.dev/providers/" + this.state.providerId;
+        let URL = "http://localhost:3000/providers/" + this.state.providerId;
         // let URL = "http://localhost:3000/users/authenticate";
 
 
@@ -483,7 +483,7 @@ class SuperAdminEditProvider extends Component {
 
     loadData = async () => {
 
-        let URL = "https://careamabrain.cmcoffee91.dev/providers/" + this.state.providerId;
+        let URL = "http://localhost:3000/providers/" + this.state.providerId;
 
 
         const response = await axios({

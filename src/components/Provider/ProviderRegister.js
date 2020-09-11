@@ -456,7 +456,7 @@ class ProviderRegister extends Component {
     }
 
     register = async () => {
-        let URL = "https://careamabrain.cmcoffee91.dev/providers";
+        let URL = "http://localhost:3000/providers";
         // let URL = "http://localhost:3000/users/authenticate";
 
 

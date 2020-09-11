@@ -190,7 +190,7 @@ class AuditEntries extends Component {
 
     loadData = async () => {
 
-        let URL = "https://careamabrain.cmcoffee91.dev/auditEntries/"  + "?startDate=" +  this.state.selectedStartDate.toISOString()   + "&endDate=" + this.state.selectedEndDate.toISOString();
+        let URL = "http://localhost:3000/auditEntries/"  + "?startDate=" +  this.state.selectedStartDate.toISOString()   + "&endDate=" + this.state.selectedEndDate.toISOString();
 
         this.setState({
             entries: []

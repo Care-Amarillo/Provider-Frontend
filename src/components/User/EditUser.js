@@ -280,7 +280,7 @@ class EditProfile extends Component {
     }
 
     updateUser = async () => {
-        let URL = "https://careamabrain.cmcoffee91.dev/users/" + this.props.user._id;
+        let URL = "http://localhost:3000/users/" + this.props.user._id;
         // let URL = "http://localhost:3000/users/authenticate";
 
 

@@ -48,12 +48,8 @@ class ProviderPanel extends Component {
     loadData = async () => {
 
 
-        let URL = "https://careamabrain.cmcoffee91.dev/providersActive";
-        // let URL = "http://localhost:3000/providers";
-
-        // this.setState({
-        //     providers: []
-        // });
+        let URL = "http://localhost:3000/providersActive";
+        
 
 
         const response = await axios({

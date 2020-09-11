@@ -441,8 +441,7 @@ class EditProvider extends Component {
     }
 
     updateProvider = async () => {
-        let URL = "https://careamabrain.cmcoffee91.dev/providers/" + this.state.providerId;
-        // let URL = "http://localhost:3000/users/authenticate";
+        let URL = "http://localhost:3000/providers/" + this.state.providerId;
 
 
 
@@ -503,7 +502,7 @@ class EditProvider extends Component {
 
     loadData = async () => {
 
-        let URL = "https://careamabrain.cmcoffee91.dev/managingUsers/user/" + this.props.user._id;
+        let URL = "http://localhost:3000/managingUsers/user/" + this.props.user._id;
 
         const config = {
             "Authorization": `Bearer ${this.props.token}`
